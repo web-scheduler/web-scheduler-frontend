@@ -51,3 +51,24 @@ jobs:
         with:
           name: ${{matrix.os}}
           path: "./Artifacts"
+          
+    # Publish the website
+  publish_release:
+    needs: build
+    name: GitHub Pages action
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main' || github.event_name == 'release'
+    steps:
+      - name: Download Artifacts
+        uses: actions/download-artifact@v2.1.0
+        with:
+          name:  ${{matrix.os}}
+      - name: Publish to release branch
+        uses: peaceiris/actions-gh-pages@v3.8.0
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN  }}
+          publish_branch: release
+          publish_dir: ./Artifacts/publish/wwwroot
+          allow_empty_commit: false
+          keep_files: false
+          force_orphan: true
