@@ -57,7 +57,7 @@ jobs:
     needs: build
     name: GitHub Pages action
     runs-on: ubuntu-latest
-   # if: github.event_name == 'release'
+    if: github.event_name == 'release'
     permissions:
       contents: write 
     steps:
