@@ -70,7 +70,7 @@ jobs:
         with:
           github_token: ${{ secrets.GITHUB_TOKEN  }}
           publish_branch: release
-          publish_dir: ./publish/wwwroot
+          publish_dir: "./${{matrix.os}}/Publish/wwwroot"
           allow_empty_commit: false
           keep_files: false
           force_orphan: true
