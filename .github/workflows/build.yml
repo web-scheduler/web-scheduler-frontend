@@ -65,12 +65,14 @@ jobs:
         uses: actions/download-artifact@v2.1.0
         with:
           name:  ubuntu-latest
+      - name: List Files
+        run: ls -R
       - name: Publish to release branch
         uses: peaceiris/actions-gh-pages@v3.8.0
         with:
           github_token: ${{ secrets.GITHUB_TOKEN  }}
           publish_branch: release
-          publish_dir: "./ubuntu-latest/Publish/wwwroot"
+          publish_dir: ./ubuntu-latest/Publish/wwwroot
           allow_empty_commit: false
           keep_files: false
           force_orphan: true
