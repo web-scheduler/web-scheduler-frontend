@@ -53,8 +53,18 @@ jobs:
           path: "./Artifacts"
           
     # Publish the website
-      - name: GitHub Pages action
-        if: github.ref == 'refs/heads/main' || github.event_name == 'release'
+  publish_release:
+    needs: build
+    name: GitHub Pages action
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main' || github.event_name == 'release'
+    steps:
+      - name: Download Artifacts
+      - name: "Download Artifact"
+        uses: actions/download-artifact@v2.1.0
+        with:
+          name: "ubuntu-latest"
+      - name: Publish to release branch
         uses: peaceiris/actions-gh-pages@v3.8.0
         with:
           github_token: ${{ secrets.GITHUB_TOKEN  }}
