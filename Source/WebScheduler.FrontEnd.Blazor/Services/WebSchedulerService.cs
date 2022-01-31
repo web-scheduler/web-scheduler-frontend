@@ -1,7 +1,6 @@
 namespace WebScheduler.FrontEnd.Blazor.Services;
 
 using System.Net.Http.Headers;
-using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.AspNetCore.Components.WebAssembly.Http;
@@ -34,7 +33,7 @@ public class WebSchedulerService : IWebSchedulerService
 
         if (tokenResult.TryGetToken(out var token))
         {
-            request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", await this.GetJwtToken().ConfigureAwait(false));
+            request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", await this.GetJwtTokenAsync().ConfigureAwait(false));
             var response = await this.httpClient.SendAsync(request).ConfigureAwait(false);
             return await response.Content.ReadAsStringAsync().ConfigureAwait(false);
         }
@@ -44,11 +43,6 @@ public class WebSchedulerService : IWebSchedulerService
     /// <summary>
     /// Gets the raw JWT id_token.
     /// </summary>
-    /// <returns></returns>
-    public async Task<string> GetJwtToken()
-    {
-
-        return await this.jsRuntime.InvokeAsync<string>("getOidToken", $"oidc.user:{this.oidcProviderOptions.Authority}:{this.oidcProviderOptions.ClientId}").ConfigureAwait(false);
-
-    }
+    /// <returns>The JWT Token from the OIDC id_token</returns>
+    public ValueTask<string> GetJwtTokenAsync() => this.jsRuntime.InvokeAsync<string>("getOidToken", $"oidc.user:{this.oidcProviderOptions.Authority}:{this.oidcProviderOptions.ClientId}");
 }
