@@ -10,6 +10,16 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebScheduler.FrontEnd.Blazor", "Source\WebScheduler.FrontEnd.Blazor\WebScheduler.FrontEnd.Blazor.csproj", "{49B181AD-4505-4AD1-8F1E-9625F948B367}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".github", ".github", "{411E3972-2AA3-43AD-916A-F5DA5E3AA4A6}"
+	ProjectSection(SolutionItems) = preProject
+		.github\FUNDING.yml = .github\FUNDING.yml
+		.github\PULL_REQUEST_TEMPLATE.md = .github\PULL_REQUEST_TEMPLATE.md
+		.github\release-drafter.yml = .github\release-drafter.yml
+		.github\SECURITY.md = .github\SECURITY.md
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".do", ".do", "{6A0B2ED0-3EA4-4ED8-B59A-DA393A534C8F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -23,6 +33,10 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{411E3972-2AA3-43AD-916A-F5DA5E3AA4A6} = {2C9A0C53-B6D5-47B7-95DD-295560CDA64D}
+		{6A0B2ED0-3EA4-4ED8-B59A-DA393A534C8F} = {2C9A0C53-B6D5-47B7-95DD-295560CDA64D}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {574AAFA6-1E77-4F9D-80DB-604AFD622022}
