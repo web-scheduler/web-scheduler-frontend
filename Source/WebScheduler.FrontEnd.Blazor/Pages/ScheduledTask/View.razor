@@ -1,15 +1,18 @@
-@page "/scheduledtasks/{id}"
+@page "/scheduledtasks/{Id:guid}"
 @attribute [Authorize]
-
 @using WebScheduler.Api.ViewModels
 @using Microsoft.Extensions.Logging
 @inject ILogger<View> Logger
 @inject NavigationManager NavigationManager
 @inject ScheduledTaskService scheduledTaskService
 <PageTitle>My Scheduled Tasks</PageTitle>
-if(@model.ScheduledTaskId == Guid.Empty){
-    Loading...
-}else{
+
+@if(@model.ScheduledTaskId == Guid.Empty)
+{
+    <p>Loading...</p>
+}
+else
+{
 
 <h1>Scheduled Task: @model.Name</h1>
 <p>@model.Description</p>
@@ -17,13 +20,16 @@ if(@model.ScheduledTaskId == Guid.Empty){
 }
 
 @code {
+    [Parameter]
+    public Guid Id { get; set; }
+
     private ScheduledTask model = new();
 
     protected async override Task OnInitializedAsync()
     {
         try
         {
-            model = await scheduledTaskService.GetScheduledTaskAsync(Guid.NewGuid());
+            model = await scheduledTaskService.GetScheduledTaskAsync(this.Id);
         }
         catch (Exception ex)
         {

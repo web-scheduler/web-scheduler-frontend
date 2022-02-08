@@ -15,21 +15,11 @@ builder.RootComponents.Add<HeadOutlet>("head::after");
 builder.Services.AddHttpClient<ScheduledTaskService>(client => client.BaseAddress = new Uri(builder.Configuration.GetValue<string>("WebScheduler:BaseUri")))
 .AddHttpMessageHandler(sp => sp.GetRequiredService<AuthorizationMessageHandler>()
     .ConfigureHandler(
-        authorizedUrls: new[] { new Uri(builder.Configuration.GetValue<string>("WebScheduler:BaseUri")).AbsoluteUri },
-        scopes: new[] { "email", "profile", "openid" }));
+        authorizedUrls: builder.Configuration.GetSection("IdentitySettings:AuthorizedUris").AsEnumerable().Select(x => x.Value).Where(j => !string.IsNullOrWhiteSpace(j)).ToArray(),
+        scopes: builder.Configuration.GetSection("IdentitySettings:DefaultScopes").AsEnumerable().Select(x => x.Value).Where(j => !string.IsNullOrWhiteSpace(j)).ToArray()));
 
-builder.Services.AddOidcAuthentication(options =>
-{
-    //builder.Configuration.Bind("IdentitySettings", options.ProviderOptions);
-    options.ProviderOptions.Authority = "https://account.nullreference.io";
-    options.ProviderOptions.RedirectUri = "https://scheduler.nullreference.io/authentication/login-callback";
-    options.ProviderOptions.MetadataUrl = "https://account.nullreference.io/.well-known/openid-configuration";
-    options.ProviderOptions.DefaultScopes.Add("openid");
-    options.ProviderOptions.DefaultScopes.Add("profile");
-    options.ProviderOptions.DefaultScopes.Add("email");
-    options.ProviderOptions.ResponseType = "id_token token";
-    options.ProviderOptions.ClientId = "web-scheduler-api";
-});
+builder.Services.AddOidcAuthentication(options => builder.Configuration.Bind("IdentitySettings", options.ProviderOptions));
+
 builder.Services.AddAuthorizationCore(c => { });
 
 await builder.Build().RunAsync();
