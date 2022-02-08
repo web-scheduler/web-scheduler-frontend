@@ -1,0 +1,22 @@
+@page "/scheduledtasks/new"
+@inject IHttpClientFactory httpClientFactory
+
+<PageTitle>My Scheduled Tasks</PageTitle>
+
+<h1>My Scheduled Tasks</h1>
+
+<p>These are your scheduled tasks.</p>
+
+<a class="btn btn-primary" href="scheduledtasks/add">Click me</a>
+
+
+
+@code {
+    private string taskData = string.Empty;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var client = httpClientFactory.CreateClient("web-scheduler-api");
+        taskData= await client.GetStringAsync("scheduledtasks/340cc9cf-d21e-4714-8db7-09ad7a199548?api-version=1.0");
+    }
+}
