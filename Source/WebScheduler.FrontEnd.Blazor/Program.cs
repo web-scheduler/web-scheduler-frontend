@@ -21,7 +21,7 @@ builder.Services.AddOidcAuthentication(options =>
 {
     //builder.Configuration.Bind("IdentitySettings", options.ProviderOptions);
     options.ProviderOptions.Authority = "https://account.nullreference.io";
-    options.ProviderOptions.RedirectUri = "https://localhost:7099/authentication/login-callback";
+    options.ProviderOptions.RedirectUri = "https://scheduler.nullreference.io/authentication/login-callback";
     options.ProviderOptions.MetadataUrl= "https://account.nullreference.io/.well-known/openid-configuration";
     options.ProviderOptions.DefaultScopes.Add("openid");
     options.ProviderOptions.DefaultScopes.Add("profile");
