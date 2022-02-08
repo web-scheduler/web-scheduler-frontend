@@ -1,0 +1,40 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+      {
+          "name": "Launch and Debug Standalone Blazor WebAssembly App",
+          "type": "blazorwasm",
+          "request": "launch",
+          "cwd": "${workspaceFolder}/Source/WebScheduler.FrontEnd.Blazor",
+          "url": "https://localhost:7099" // Tell launch where to find site
+      },
+      {
+          "name": "Watch",
+          "type": "coreclr",
+          "request": "launch",
+          "cwd": "${workspaceFolder}",
+          "program": "dotnet",
+          "args": [
+              "watch",
+              "--project",
+              ".",
+              "--verbose" // Let's us confirm browser connects with hot reload capabilities
+          ],
+          "preLaunchTask": "build" // Ensure we don't watch an unbuilt site
+      },
+      {
+          "name": "Attach",
+          "type": "blazorwasm",
+          "request": "attach",
+          "cwd": "${workspaceFolder}/Source/WebScheduler.FrontEnd.Blazor",
+          "url": "https://localhost:7099",  // Tell launch where to find site
+          "timeout": 120000, // Allows time for the site to launch
+      }
+  ],
+  "compounds": [
+      {
+          "name": "Debug with Hot Reload",
+          "configurations": [ "Watch", "Attach" ]
+      }
+  ]
+}

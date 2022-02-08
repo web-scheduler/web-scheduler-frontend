@@ -1,0 +1,34 @@
+@page "/scheduledtasks/{id}"
+@attribute [Authorize]
+
+@using WebScheduler.Api.ViewModels
+@using Microsoft.Extensions.Logging
+@inject ILogger<View> Logger
+@inject NavigationManager NavigationManager
+@inject ScheduledTaskService scheduledTaskService
+<PageTitle>My Scheduled Tasks</PageTitle>
+if(@model.ScheduledTaskId == Guid.Empty){
+    Loading...
+}else{
+
+<h1>Scheduled Task: @model.Name</h1>
+<p>@model.Description</p>
+
+}
+
+@code {
+    private ScheduledTask model = new();
+
+    protected async override Task OnInitializedAsync()
+    {
+        try
+        {
+            model = await scheduledTaskService.GetScheduledTaskAsync(Guid.NewGuid());
+        }
+        catch (Exception ex)
+        {
+            Logger.LogError(ex, "Error getting scheduled task: {id}", model.ScheduledTaskId);
+        }
+
+    }
+}
