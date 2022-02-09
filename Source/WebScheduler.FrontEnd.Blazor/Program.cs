@@ -3,37 +3,23 @@ using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using WebScheduler.FrontEnd.Blazor;
+using WebScheduler.FrontEnd.Blazor.Services;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
 builder.RootComponents.Add<HeadOutlet>("head::after");
 
 
-builder.Services.AddAuthorizationCore(c => { });
 
 
-//builder.Services.AddOpenidConnectPkce(settings =>
-//{
-//    builder.Configuration.Bind("IdentitySettings", settings);
-
-//});
-builder.Services.AddOidcAuthentication(options =>
-{
-    //builder.Configuration.Bind("IdentitySettings", options.ProviderOptions);
-    options.ProviderOptions.Authority = "https://account.nullreference.io";
-    options.ProviderOptions.RedirectUri = "https://scheduler.nullreference.io/authentication/login-callback";
-    options.ProviderOptions.MetadataUrl= "https://account.nullreference.io/.well-known/openid-configuration";
-    options.ProviderOptions.DefaultScopes.Add("openid");
-    options.ProviderOptions.DefaultScopes.Add("profile");
-    options.ProviderOptions.DefaultScopes.Add("email");
-    options.ProviderOptions.ResponseType = "id_token token";
-    options.ProviderOptions.ClientId= "web-scheduler-api";
-});
-
-builder.Services.AddHttpClient("web-scheduler-api", client => client.BaseAddress = new Uri(new Uri(builder.Configuration.GetValue<string>("WebScheduler:BaseUri")), "/api"))
+builder.Services.AddHttpClient<ScheduledTaskService>(client => client.BaseAddress = new Uri(builder.Configuration.GetValue<string>("WebScheduler:BaseUri")))
 .AddHttpMessageHandler(sp => sp.GetRequiredService<AuthorizationMessageHandler>()
     .ConfigureHandler(
-        authorizedUrls: new[] { new Uri(new Uri(builder.Configuration.GetValue<string>("WebScheduler:BaseUri")), "/api").AbsoluteUri },
-        scopes: new[] { "email", "profile" }));
+        authorizedUrls: builder.Configuration.GetSection("IdentitySettings:AuthorizedUris").AsEnumerable().Select(x => x.Value).Where(j => !string.IsNullOrWhiteSpace(j)).ToArray(),
+        scopes: builder.Configuration.GetSection("IdentitySettings:DefaultScopes").AsEnumerable().Select(x => x.Value).Where(j => !string.IsNullOrWhiteSpace(j)).ToArray()));
+
+builder.Services.AddOidcAuthentication(options => builder.Configuration.Bind("IdentitySettings", options.ProviderOptions));
+
+builder.Services.AddAuthorizationCore(c => { });
 
 await builder.Build().RunAsync();

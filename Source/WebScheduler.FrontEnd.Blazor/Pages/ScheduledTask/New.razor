@@ -1,22 +1,41 @@
 @page "/scheduledtasks/new"
-@inject IHttpClientFactory httpClientFactory
+@attribute [Authorize]
 
+@using WebScheduler.Api.ViewModels
+@using Microsoft.Extensions.Logging
+@inject ScheduledTaskService scheduledTaskService
+@inject ILogger<New> Logger
+@inject NavigationManager NavigationManager
 <PageTitle>My Scheduled Tasks</PageTitle>
 
 <h1>My Scheduled Tasks</h1>
 
-<p>These are your scheduled tasks.</p>
+<EditForm Model="@model" OnValidSubmit="@HandleValidSubmit">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
 
-<a class="btn btn-primary" href="scheduledtasks/add">Click me</a>
-
-
+    <InputText id="name" @bind-Value="model.Name" />
+    <InputTextArea id="name" @bind-Value="model.Description" />
+    <button type="submit">Save</button>
+</EditForm>
 
 @code {
-    private string taskData = string.Empty;
+    private SaveScheduledTask model = new();
 
-    protected override async Task OnInitializedAsync()
+    private async Task HandleValidSubmit()
     {
-        var client = httpClientFactory.CreateClient("web-scheduler-api");
-        taskData= await client.GetStringAsync("scheduledtasks/340cc9cf-d21e-4714-8db7-09ad7a199548?api-version=1.0");
+        Logger.LogInformation("HandleValidSubmit called");
+        try
+        {
+            var result = await scheduledTaskService.CreateScheduledTaskAsync(Guid.NewGuid(), model);
+            if (result != null)
+            {
+                NavigationManager.NavigateTo($"/scheduledtasks/{result.ScheduledTaskId}");
+            }
+        }
+        catch (Exception ex)
+        {
+            Logger.LogError(ex, "Error creating scheduled task");
+        }
     }
 }
