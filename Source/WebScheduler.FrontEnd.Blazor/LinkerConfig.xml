@@ -24,8 +24,5 @@
     isn't stripped by the IL Linker.
   -->
   <assembly fullname="WebScheduler.FrondEnd.Blazor" />
-  <assembly fullname="WebScheduler.Api.Models" preserve="All">
-    <type fullname="WebScheduler.Api.ViewModels.ScheduledTask" />
-
-  </assembly>
+  <assembly fullname="WebScheduler.Api.Models" />
 </linker>
