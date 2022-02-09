@@ -27,10 +27,10 @@
         Logger.LogInformation("HandleValidSubmit called");
         try
         {
-            var result = await scheduledTaskService.CreateScheduledTaskAsync(Guid.NewGuid(), model);
+            var result = await scheduledTaskService.CreateScheduledTaskAsync(model);
             if (result != null)
             {
-                NavigationManager.NavigateTo($"/scheduledtasks/{result.ScheduledTaskId}");
+                NavigationManager.NavigateTo($"scheduledtasks/{result.ScheduledTaskId}");
             }
         }
         catch (Exception ex)

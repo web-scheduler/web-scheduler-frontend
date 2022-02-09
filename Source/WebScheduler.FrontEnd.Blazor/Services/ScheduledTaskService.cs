@@ -31,18 +31,18 @@ internal class ScheduledTaskService
         }
     }
 
-    public async Task<ScheduledTask> CreateScheduledTaskAsync(Guid id, SaveScheduledTask saveScheduledTask)
+    public async Task<ScheduledTask> CreateScheduledTaskAsync(SaveScheduledTask saveScheduledTask)
     {
         try
         {
             var result = await this.client.PostAsJsonAsync($"ScheduledTasks?api-version=1.0", saveScheduledTask);
             _ = result.EnsureSuccessStatusCode();
             var scheduledTask = await result.Content.ReadFromJsonAsync<ScheduledTask>();
-            return scheduledTask switch
+            if (scheduledTask != null)
             {
-                null => throw new ScheduledTaskNotFoundException(id),
-                _ => scheduledTask,
-            };
+                return scheduledTask;
+            }
+            throw new Exception("Unable to create scheduled task.");
         }
         catch(ScheduledTaskNotFoundException scheduledTaskNotFoundException){
             this.logger.LogError(scheduledTaskNotFoundException, "Scheduled task not found");
