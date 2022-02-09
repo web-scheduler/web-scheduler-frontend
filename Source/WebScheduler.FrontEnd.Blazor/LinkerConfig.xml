@@ -18,13 +18,15 @@
       expression.Compile caller. The assembly isn't stripped.
     -->
     <type fullname="System.Linq.Expressions*" />
+
     <type fullname="System.Net.Http.Json" />
-    <type fullname="WebScheduler.Api.Models" />
-    <type fullname="WebScheduler.Abstractions" />
   </assembly>
   <!--
     In this example, the app's entry point assembly is listed. The assembly
     isn't stripped by the IL Linker.
   -->
   <assembly fullname="WebScheduler.FrondEnd.Blazor" />
+  <type fullname="WebScheduler.Api.Models" />
+  <type fullname="WebScheduler.Abstractions" />
+
 </linker>
