@@ -1,24 +1,50 @@
-<Project Sdk="Microsoft.NET.Sdk.BlazorWebAssembly">
+﻿<Project Sdk="Microsoft.NET.Sdk.BlazorWebAssembly">
 
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <UserSecretsId>2bb7f517-3302-4d0e-be84-bfcef9c61238</UserSecretsId>
-    
+    <BlazorEnableTimeZoneSupport>false</BlazorEnableTimeZoneSupport>
+    <BlazorWebAssemblyPreserveCollationData>false</BlazorWebAssemblyPreserveCollationData>
+    <BlazorWebAssemblyI18NAssemblies>none</BlazorWebAssemblyI18NAssemblies>
+    <InvariantGlobalization>true</InvariantGlobalization>
+
 
   </PropertyGroup>
-  <ItemGroup>
+
+  <PropertyGroup Condition="'$(Configuration)'=='Release'">
+    <DebuggerSupport>false</DebuggerSupport>
+    <PublishTrimmed>true</PublishTrimmed>
+    <TrimMode>link</TrimMode>
+    <TrimmerRemoveSymbols>true</TrimmerRemoveSymbols>
+    <DebuggerSupport>false</DebuggerSupport>
+    <EnableUnsafeBinaryFormatterSerialization>false</EnableUnsafeBinaryFormatterSerialization>
+    <EnableUnsafeBinaryFormatterSerialization>false</EnableUnsafeBinaryFormatterSerialization>
+    <EventSourceSupport>false</EventSourceSupport>
+    <HttpActivityPropagationSupport>false</HttpActivityPropagationSupport>
+    <MetadataUpdaterSupport>false</MetadataUpdaterSupport>
+    <UseNativeHttpHandler>true</UseNativeHttpHandler>
+    <UseSystemResourceKeys>false</UseSystemResourceKeys>
+
+  </PropertyGroup>
+  <ItemGroup Condition="'$(Configuration)'=='Release'">
     <BlazorLinkerDescriptor Include="LinkerConfig.xml" />
+    <TrimmerRootAssembly Include="WebScheduler.Api.Models" />
+    <TrimmableAssembly Include="Microsoft.CodeAnalysis" />
+    <TrimmableAssembly Include="Microsoft.CodeAnalysis.CSharp" />
+    <TrimmableAssembly Include="Microsoft.CodeAnalysis.CSharp.Scripting" />
+    <TrimmableAssembly Include="Microsoft.CodeAnalysis.Scripting" />
   </ItemGroup>
+  
   <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="6.0.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Authentication" Version="6.0.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="6.0.0" PrivateAssets="all" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="6.0.2" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Authentication" Version="6.0.2" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="6.0.2" PrivateAssets="all" />
     <PackageReference Include="Microsoft.Extensions.Http" Version="6.0.0" />
     <PackageReference Include="System.ComponentModel.Annotations" Version="5.0.0" />
-    <PackageReference Include="WebScheduler.Abstractions" Version="0.1.9" />
-    <PackageReference Include="WebScheduler.Api.Models" Version="0.1.13" />
+    <PackageReference Include="WebScheduler.Abstractions" Version="0.1.10" />
+    <PackageReference Include="WebScheduler.Api.Models" Version="0.1.16" />
   </ItemGroup>
 
 </Project>
