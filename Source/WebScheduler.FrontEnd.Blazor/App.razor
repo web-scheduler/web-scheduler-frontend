@@ -1,3 +1,5 @@
+<Blazorise.ThemeProvider Theme="@theme">
+
 <CascadingAuthenticationState>
     <Router AppAssembly="@typeof(App).Assembly">
         <Found Context="routeData">
@@ -26,3 +28,15 @@
         </NotFound>
     </Router>
 </CascadingAuthenticationState>
+
+<NotificationAlert />
+<PageProgressAlert />
+<MessageAlert />
+
+</Blazorise.ThemeProvider>
+@code{
+    private Theme theme = new Theme
+    {
+        // theme settings
+    };
+}

@@ -1,0 +1,5 @@
+{
+  "version": "1.0",
+  "defaultProvider": "cdnjs",
+  "libraries": ["bootstrap@v5.15.4"]
+}
