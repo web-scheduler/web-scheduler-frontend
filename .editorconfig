@@ -454,3 +454,7 @@ dotnet_diagnostic.CS1591.severity = none
 # FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 # OTHER DEALINGS IN THE SOFTWARE.
 ##########################################
+
+# VSTHRD111: Use ConfigureAwait(bool)
+# Not used in blazor, want everything to be ConfigureAwait(true), which is the default.
+dotnet_diagnostic.VSTHRD111.severity = none

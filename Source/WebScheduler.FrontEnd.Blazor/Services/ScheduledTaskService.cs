@@ -3,6 +3,9 @@ namespace WebScheduler.FrontEnd.Blazor.Services;
 using System.Net.Http.Json;
 using WebScheduler.Api.ViewModels;
 using WebScheduler.Abstractions.Grains.Scheduler;
+using Microsoft.AspNetCore.WebUtilities;
+using System.Text.Json;
+
 internal class ScheduledTaskService
 {
     private readonly ILogger<ScheduledTaskService> logger;
@@ -31,6 +34,32 @@ internal class ScheduledTaskService
         }
     }
 
+    public async Task<PagedCollection<ScheduledTask>?> GetPageAsync(PageOptions pageOptions)
+    {
+        var parameters = new Dictionary<string, string>();
+        if (pageOptions.First is not null and not 0)
+        {
+            parameters.Add(nameof(pageOptions.First), pageOptions.First.Value.ToString());
+        }
+
+        if (pageOptions.Last is not null and not 0)
+        {
+            parameters.Add(nameof(pageOptions.Last), pageOptions.Last.Value.ToString());
+        }
+        if (!string.IsNullOrWhiteSpace(pageOptions.After))
+        {
+            parameters.Add(nameof(pageOptions.After), pageOptions.After);
+        }
+        if (!string.IsNullOrWhiteSpace(pageOptions.Before))
+        {
+            parameters.Add(nameof(pageOptions.Before), pageOptions.Before);
+        }
+
+        var url = QueryHelpers.AddQueryString("ScheduledTasks?api-version=1.0", parameters);
+
+        return await this.client.GetFromJsonAsync<PagedCollection<ScheduledTask>>(url, new JsonSerializerOptions(JsonSerializerDefaults.Web));
+    }
+
     public async Task<ScheduledTask> CreateScheduledTaskAsync(SaveScheduledTask saveScheduledTask)
     {
         try
@@ -44,7 +73,8 @@ internal class ScheduledTaskService
             }
             throw new Exception("Unable to create scheduled task.");
         }
-        catch(ScheduledTaskNotFoundException scheduledTaskNotFoundException){
+        catch (ScheduledTaskNotFoundException scheduledTaskNotFoundException)
+        {
             this.logger.LogError(scheduledTaskNotFoundException, "Scheduled task not found");
             throw;
         }
@@ -56,3 +86,4 @@ internal class ScheduledTaskService
         }
     }
 }
+

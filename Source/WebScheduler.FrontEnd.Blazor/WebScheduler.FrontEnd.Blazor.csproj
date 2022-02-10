@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk.BlazorWebAssembly">
+<Project Sdk="Microsoft.NET.Sdk.BlazorWebAssembly">
 
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
@@ -8,7 +8,7 @@
     <BlazorEnableTimeZoneSupport>false</BlazorEnableTimeZoneSupport>
     <BlazorWebAssemblyPreserveCollationData>false</BlazorWebAssemblyPreserveCollationData>
     <BlazorWebAssemblyI18NAssemblies>none</BlazorWebAssemblyI18NAssemblies>
-    <InvariantGlobalization>true</InvariantGlobalization>
+    <InvariantGlobalization>false</InvariantGlobalization>
 
 
   </PropertyGroup>
@@ -19,7 +19,6 @@
     <TrimMode>link</TrimMode>
     <TrimmerRemoveSymbols>true</TrimmerRemoveSymbols>
     <DebuggerSupport>false</DebuggerSupport>
-    <EnableUnsafeBinaryFormatterSerialization>false</EnableUnsafeBinaryFormatterSerialization>
     <EnableUnsafeBinaryFormatterSerialization>false</EnableUnsafeBinaryFormatterSerialization>
     <EventSourceSupport>false</EventSourceSupport>
     <HttpActivityPropagationSupport>false</HttpActivityPropagationSupport>
@@ -38,13 +37,22 @@
   </ItemGroup>
   
   <ItemGroup>
+    
+    <PackageReference Include="Blazorise.Bootstrap5" Version="0.9.5.5" />
+    
+    <PackageReference Include="Blazorise.DataGrid" Version="0.9.5.5" />
+    <PackageReference Include="Blazorise.Components" Version="0.9.5.5" />
+    
+    <PackageReference Include="Blazorise.Icons.FontAwesome" Version="0.9.5.5" />
+    
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="6.0.2" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Authentication" Version="6.0.2" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="6.0.2" PrivateAssets="all" />
+    <PackageReference Include="Microsoft.AspNetCore.WebUtilities" Version="2.2.0" />
     <PackageReference Include="Microsoft.Extensions.Http" Version="6.0.0" />
     <PackageReference Include="System.ComponentModel.Annotations" Version="5.0.0" />
-    <PackageReference Include="WebScheduler.Abstractions" Version="0.1.10" />
-    <PackageReference Include="WebScheduler.Api.Models" Version="0.1.16" />
+    <PackageReference Include="WebScheduler.Abstractions" Version="0.1.11-alpha.0.2" />
+    <PackageReference Include="WebScheduler.Api.Models" Version="0.1.19-alpha.0.2" />
   </ItemGroup>
 
 </Project>

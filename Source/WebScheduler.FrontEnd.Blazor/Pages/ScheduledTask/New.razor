@@ -6,24 +6,58 @@
 @inject ScheduledTaskService scheduledTaskService
 @inject ILogger<New> Logger
 @inject NavigationManager NavigationManager
+@inject IPageProgressService PageProgressService
+@inject INotificationService NotificationService
+
 <PageTitle>My Scheduled Tasks</PageTitle>
 
 <h1>My Scheduled Tasks</h1>
 
-<EditForm Model="@model" OnValidSubmit="@HandleValidSubmit">
-    <DataAnnotationsValidator />
-    <ValidationSummary />
 
-    <InputText id="name" @bind-Value="model.Name" />
-    <InputTextArea id="name" @bind-Value="model.Description" />
-    <button type="submit">Save</button>
-</EditForm>
+<Validations Mode="ValidationMode.Auto" Model="@model" StatusChanged="this.ValidationStatusChange">
+
+    <Validation>
+        <Field Horizontal="true">
+            <FieldLabel ColumnSize="ColumnSize.Is2">Name</FieldLabel>
+            <FieldBody ColumnSize="ColumnSize.Is10">
+                <TextEdit Placeholder="Task Name" @bind-Text="@model.Name">
+                    <Feedback>
+                        <ValidationError />
+                    </Feedback>
+                </TextEdit>
+            </FieldBody>
+        </Field>
+    </Validation>
+    <Validation>
+        <Field Horizontal="true">
+            <FieldLabel ColumnSize="ColumnSize.Is2">Description</FieldLabel>
+            <FieldBody ColumnSize="ColumnSize.Is10">
+                <MemoEdit Placeholder="Description" @bind-Text="@model.Description">
+                    <Feedback>
+                        <ValidationError />
+                    </Feedback>
+                </MemoEdit>
+            </FieldBody>
+        </Field>
+    </Validation>
+</Validations>
+<Button Color="Color.Primary" Type="ButtonType.Submit" @onclick="HandleValidSubmit" Disabled="@isFormValid">Save</Button>
 
 @code {
     private SaveScheduledTask model = new();
 
+    bool isFormValid;
+    private void ValidationStatusChange(ValidationsStatusChangedEventArgs e)
+    {
+        isFormValid = e.Status switch
+        {
+            ValidationStatus.Success => false,
+            _ => true,
+        };
+    }
     private async Task HandleValidSubmit()
     {
+        await this.PageProgressService.Go(null, options => { options.Color = Color.Success; });
         Logger.LogInformation("HandleValidSubmit called");
         try
         {
@@ -35,7 +69,12 @@
         }
         catch (Exception ex)
         {
+            await this.NotificationService.Error("There was an error saving your Scheduled Task. Please try again.", "Error Saving Task", a => a.IntervalBeforeClose = TimeSpan.FromSeconds(10).TotalMilliseconds);
             Logger.LogError(ex, "Error creating scheduled task");
+        }
+        finally
+        {
+            await this.PageProgressService.Go(-1);
         }
     }
 }
