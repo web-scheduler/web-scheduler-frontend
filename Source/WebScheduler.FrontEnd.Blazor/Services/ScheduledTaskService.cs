@@ -52,7 +52,7 @@ internal class ScheduledTaskService
     {
         try
         {
-            var result = await this.client.PostAsJsonAsync($"ScheduledTasks?api-version=1.0", saveScheduledTask);
+            var result = await this.client.PostAsJsonAsync("ScheduledTasks?api-version=1.0", saveScheduledTask);
             _ = result.EnsureSuccessStatusCode();
             var scheduledTask = await result.Content.ReadFromJsonAsync<ScheduledTask>();
             if (scheduledTask != null)
@@ -73,40 +73,4 @@ internal class ScheduledTaskService
             throw;
         }
     }
-}
-
-public class PageResults<T>
-{
-    public PageResults() => this.Items = new List<T>();
-    public PageResults(List<T> items) => this.Items = items;
-
-    /// <summary>
-    /// Gets or sets the total count of items.
-    /// </summary>
-    /// <example>100</example>
-    public int TotalCount { get; set; }
-
-    /// <summary>
-    /// Gets the items.
-    /// </summary>
-    public List<T> Items { get; set; }
-}
-
-
-/// <summary>
-/// The options used to request a page.
-/// </summary>
-public class PageOptions
-{
-    /// <summary>
-    /// Gets or sets the number of items to retrieve from the page
-    /// </summary>
-    /// <example>10</example>
-    public int? PageSize { get; set; }
-
-    /// <summary>
-    /// Gets or sets the number of items to skip from the begining of the list.
-    /// </summary>
-    /// <example>10</example>
-    public int Offset { get; set; }
 }
