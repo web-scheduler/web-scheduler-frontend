@@ -5,7 +5,7 @@
 @inject ILogger<View> Logger
 @inject NavigationManager NavigationManager
 @inject ScheduledTaskService scheduledTaskService
-@using Microsoft.AspNetCore.WebUtilities
+
 <PageTitle>My Scheduled Tasks</PageTitle>
 <Bar Breakpoint="Breakpoint.Desktop">
 
@@ -79,7 +79,7 @@
                 throw new NotImplementedException("ReadDataMode");
             }
 
-            var pageOptions = new WebScheduler.FrontEnd.Blazor.Services.PageOptions()
+            var pageOptions = new PageOptions()
             {
                     Offset = skip,
                     PageSize = pageSize
