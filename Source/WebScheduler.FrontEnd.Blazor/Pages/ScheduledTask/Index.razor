@@ -5,7 +5,7 @@
 @inject ILogger<View> Logger
 @inject NavigationManager NavigationManager
 @inject ScheduledTaskService scheduledTaskService
-@using Microsoft.AspNetCore.WebUtilities
+
 <PageTitle>My Scheduled Tasks</PageTitle>
 <Bar Breakpoint="Breakpoint.Desktop">
 
@@ -24,20 +24,32 @@
           PageSize=10
           RowSelectable=@(_=> false)
           ShowPager
+          Sortable=false
           Responsive>
-
-    <DataGridCommandColumn TItem="ScheduledTask" />
-    <DataGridColumn TItem="ScheduledTask" Field="@nameof(ScheduledTask.Name)" Caption="Task Name" Editable="false">
-        <DisplayTemplate>
-            <Link To="@("scheduledtasks/"+context.ScheduledTaskId.ToString())">@context.Name</Link>
-        </DisplayTemplate>
-    </DataGridColumn>
-    <DataGridColumn TItem="ScheduledTask" Field="@nameof(ScheduledTask.Description)" Caption="Description" />
-    <DataGridColumn TItem="ScheduledTask" Field="@nameof(ScheduledTask.IsEnabled)" Caption="Enabled">
-        <DisplayTemplate>
-            <Switch TValue="bool" Value="@context.IsEnabled" Disabled="true" />
-        </DisplayTemplate>
-    </DataGridColumn>
+    <ChildContent>
+        <DataGridCommandColumn TItem="ScheduledTask" />
+        <DataGridColumn TItem="ScheduledTask" Field="@nameof(ScheduledTask.Name)" Caption="Task Name" Editable="false">
+            <DisplayTemplate>
+                <Link To="@("scheduledtasks/"+context.ScheduledTaskId.ToString())">@context.Name</Link>
+            </DisplayTemplate>
+        </DataGridColumn>
+        <DataGridColumn TItem="ScheduledTask" Field="@nameof(ScheduledTask.Description)" Caption="Description" />
+        <DataGridColumn TItem="ScheduledTask" Field="@nameof(ScheduledTask.IsEnabled)" Caption="Enabled">
+            <DisplayTemplate>
+                <Switch TValue="bool" Value="@context.IsEnabled" Disabled="true" />
+            </DisplayTemplate>
+        </DataGridColumn>
+    </ChildContent>
+    <EmptyTemplate>
+        <div class="box">
+            You don't have any scheduled tasks.
+        </div>
+    </EmptyTemplate>
+    <LoadingTemplate>
+        <div class="box">
+            <progress class="progress is-small is-primary" max="100" />
+        </div>
+    </LoadingTemplate>
 </DataGrid>
 
 @code {
@@ -45,19 +57,13 @@
     private List<ScheduledTask> scheduledTasks = default!;
 
     private int totalScheduledTasks = default;
-    private PagedCollection<ScheduledTask> lastPagedData = default!;
+
     private async Task OnReadData(DataGridReadDataEventArgs<ScheduledTask> e)
     {
         if (!e.CancellationToken.IsCancellationRequested)
         {
-            if (this.lastPagedData is not null && !this.lastPagedData.PageInfo.HasNextPage)
-            {
-                return;
-            }
-
             int skip, pageSize;
-            // this can be call to anything, in this case we're calling a fictional api
-            //var response = await Http.GetJsonAsync<ScheduledTask[]>( $"some-api/ScheduledTasks?page={e.Page}&pageSize={e.PageSize}" );
+
             if (e.ReadDataMode is DataGridReadDataMode.Virtualize)
             {
                 skip = e.VirtualizeOffset;
@@ -74,24 +80,17 @@
             }
 
             var pageOptions = new PageOptions()
-                {
-                    First = skip,
+            {
+                    Offset = skip,
+                    PageSize = pageSize
                 };
-            //if(this.lastPagedData is not null)
-            //{
-            //    var parsedQuery = QueryHelpers.ParseQuery(this.lastPagedData?.PageInfo?.NextPageUrl?.AbsoluteUri);
-            //    if(parsedQuery.TryGetValue("After", out var  val))
-            //    {
-            //           pageOptions.After = val.FirstOrDefault();
-            //    }
-            //}
+
             var ret = await scheduledTaskService.GetPageAsync(pageOptions);
 
             if (ret is null)
             {
                 throw new Exception("Result is null");
             }
-            this.lastPagedData = ret;
 
             this.totalScheduledTasks = ret.TotalCount;
             scheduledTasks = ret.Items;

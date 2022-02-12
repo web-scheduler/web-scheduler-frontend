@@ -5,6 +5,7 @@ using WebScheduler.Api.ViewModels;
 using WebScheduler.Abstractions.Grains.Scheduler;
 using Microsoft.AspNetCore.WebUtilities;
 using System.Text.Json;
+using System.Globalization;
 
 internal class ScheduledTaskService
 {
@@ -34,37 +35,24 @@ internal class ScheduledTaskService
         }
     }
 
-    public async Task<PagedCollection<ScheduledTask>?> GetPageAsync(PageOptions pageOptions)
+    public async Task<PageResults<ScheduledTask>?> GetPageAsync(PageOptions pageOptions)
     {
-        var parameters = new Dictionary<string, string>();
-        if (pageOptions.First is not null and not 0)
+        pageOptions.PageSize ??= 10;
+        var parameters = new Dictionary<string, string>
         {
-            parameters.Add(nameof(pageOptions.First), pageOptions.First.Value.ToString());
-        }
-
-        if (pageOptions.Last is not null and not 0)
-        {
-            parameters.Add(nameof(pageOptions.Last), pageOptions.Last.Value.ToString());
-        }
-        if (!string.IsNullOrWhiteSpace(pageOptions.After))
-        {
-            parameters.Add(nameof(pageOptions.After), pageOptions.After);
-        }
-        if (!string.IsNullOrWhiteSpace(pageOptions.Before))
-        {
-            parameters.Add(nameof(pageOptions.Before), pageOptions.Before);
-        }
-
+            { nameof(pageOptions.Offset), pageOptions.Offset.ToString("D", CultureInfo.InvariantCulture) },
+            { nameof(pageOptions.PageSize), pageOptions.PageSize.Value.ToString("D", CultureInfo.InvariantCulture)}
+        };
         var url = QueryHelpers.AddQueryString("ScheduledTasks?api-version=1.0", parameters);
 
-        return await this.client.GetFromJsonAsync<PagedCollection<ScheduledTask>>(url, new JsonSerializerOptions(JsonSerializerDefaults.Web));
+        return await this.client.GetFromJsonAsync<PageResults<ScheduledTask>>(url, new JsonSerializerOptions(JsonSerializerDefaults.Web));
     }
 
     public async Task<ScheduledTask> CreateScheduledTaskAsync(SaveScheduledTask saveScheduledTask)
     {
         try
         {
-            var result = await this.client.PostAsJsonAsync($"ScheduledTasks?api-version=1.0", saveScheduledTask);
+            var result = await this.client.PostAsJsonAsync("ScheduledTasks?api-version=1.0", saveScheduledTask);
             _ = result.EnsureSuccessStatusCode();
             var scheduledTask = await result.Content.ReadFromJsonAsync<ScheduledTask>();
             if (scheduledTask != null)
@@ -86,4 +74,3 @@ internal class ScheduledTaskService
         }
     }
 }
-
