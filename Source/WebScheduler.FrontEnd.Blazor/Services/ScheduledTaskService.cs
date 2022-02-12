@@ -5,6 +5,7 @@ using WebScheduler.Api.ViewModels;
 using WebScheduler.Abstractions.Grains.Scheduler;
 using Microsoft.AspNetCore.WebUtilities;
 using System.Text.Json;
+using System.Globalization;
 
 internal class ScheduledTaskService
 {
@@ -34,30 +35,17 @@ internal class ScheduledTaskService
         }
     }
 
-    public async Task<PagedCollection<ScheduledTask>?> GetPageAsync(PageOptions pageOptions)
+    public async Task<PageResults<ScheduledTask>?> GetPageAsync(PageOptions pageOptions)
     {
-        var parameters = new Dictionary<string, string>();
-        if (pageOptions.First is not null and not 0)
+        pageOptions.PageSize ??= 10;
+        var parameters = new Dictionary<string, string>
         {
-            parameters.Add(nameof(pageOptions.First), pageOptions.First.Value.ToString());
-        }
-
-        if (pageOptions.Last is not null and not 0)
-        {
-            parameters.Add(nameof(pageOptions.Last), pageOptions.Last.Value.ToString());
-        }
-        if (!string.IsNullOrWhiteSpace(pageOptions.After))
-        {
-            parameters.Add(nameof(pageOptions.After), pageOptions.After);
-        }
-        if (!string.IsNullOrWhiteSpace(pageOptions.Before))
-        {
-            parameters.Add(nameof(pageOptions.Before), pageOptions.Before);
-        }
-
+            { nameof(pageOptions.Offset), pageOptions.Offset.ToString("D", CultureInfo.InvariantCulture) },
+            { nameof(pageOptions.PageSize), pageOptions.PageSize.Value.ToString("D", CultureInfo.InvariantCulture)}
+        };
         var url = QueryHelpers.AddQueryString("ScheduledTasks?api-version=1.0", parameters);
 
-        return await this.client.GetFromJsonAsync<PagedCollection<ScheduledTask>>(url, new JsonSerializerOptions(JsonSerializerDefaults.Web));
+        return await this.client.GetFromJsonAsync<PageResults<ScheduledTask>>(url, new JsonSerializerOptions(JsonSerializerDefaults.Web));
     }
 
     public async Task<ScheduledTask> CreateScheduledTaskAsync(SaveScheduledTask saveScheduledTask)
@@ -87,3 +75,38 @@ internal class ScheduledTaskService
     }
 }
 
+public class PageResults<T>
+{
+    public PageResults() => this.Items = new List<T>();
+    public PageResults(List<T> items) => this.Items = items;
+
+    /// <summary>
+    /// Gets or sets the total count of items.
+    /// </summary>
+    /// <example>100</example>
+    public int TotalCount { get; set; }
+
+    /// <summary>
+    /// Gets the items.
+    /// </summary>
+    public List<T> Items { get; set; }
+}
+
+
+/// <summary>
+/// The options used to request a page.
+/// </summary>
+public class PageOptions
+{
+    /// <summary>
+    /// Gets or sets the number of items to retrieve from the page
+    /// </summary>
+    /// <example>10</example>
+    public int? PageSize { get; set; }
+
+    /// <summary>
+    /// Gets or sets the number of items to skip from the begining of the list.
+    /// </summary>
+    /// <example>10</example>
+    public int Offset { get; set; }
+}
