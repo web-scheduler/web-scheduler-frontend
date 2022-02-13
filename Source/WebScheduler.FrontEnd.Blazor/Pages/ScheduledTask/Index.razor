@@ -34,6 +34,7 @@
             </DisplayTemplate>
         </DataGridColumn>
         <DataGridColumn TItem="ScheduledTask" Field="@nameof(ScheduledTask.Description)" Caption="Description" />
+        <DataGridColumn TItem="ScheduledTask" Field="@nameof(ScheduledTask.CreatedAt)" Caption="Created" />    
         <DataGridColumn TItem="ScheduledTask" Field="@nameof(ScheduledTask.IsEnabled)" Caption="Enabled">
             <DisplayTemplate>
                 <Switch TValue="bool" Value="@context.IsEnabled" Disabled="true" />
