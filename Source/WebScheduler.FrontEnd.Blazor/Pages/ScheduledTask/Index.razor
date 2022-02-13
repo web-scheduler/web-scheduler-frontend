@@ -34,7 +34,14 @@
             </DisplayTemplate>
         </DataGridColumn>
         <DataGridColumn TItem="ScheduledTask" Field="@nameof(ScheduledTask.Description)" Caption="Description" />
-        <DataGridColumn TItem="ScheduledTask" Field="@nameof(ScheduledTask.CreatedAt)" Caption="Created" />    
+        <DataGridColumn TItem="ScheduledTask" Field="@nameof(ScheduledTask.ScheduledTaskId)" Caption="Schedule">
+            <DisplayTemplate>
+                @CronExpressionDescriptor.ExpressionDescriptor.GetDescription(context.CronExpression)
+            </DisplayTemplate>
+        </DataGridColumn>
+        
+        <DataGridColumn TItem="ScheduledTask" Field="@nameof(ScheduledTask.LastRunAt)" Caption="Last Run" />
+        <DataGridColumn TItem="ScheduledTask" Field="@nameof(ScheduledTask.NextRunAt)" Caption="Next Run" />    
         <DataGridColumn TItem="ScheduledTask" Field="@nameof(ScheduledTask.IsEnabled)" Caption="Enabled">
             <DisplayTemplate>
                 <Switch TValue="bool" Value="@context.IsEnabled" Disabled="true" />
