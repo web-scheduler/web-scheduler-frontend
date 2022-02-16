@@ -1,5 +1,6 @@
 @page "/scheduledtasks/{Id:guid}"
 @attribute [Authorize]
+@using Cronos
 @using WebScheduler.Api.ViewModels
 @using Microsoft.Extensions.Logging
 @inject ILogger<View> Logger
@@ -7,39 +8,136 @@
 @inject ScheduledTaskService scheduledTaskService
 
 <PageTitle>My Scheduled Tasks</PageTitle>
+
 <Bar Breakpoint="Breakpoint.Desktop">
 
     <BarMenu>
         <BarStart>
             <BarItem>
-                <Button Color="Color.Primary"  Type="ButtonType.Link" To="scheduledtasks">All Tasks</Button>
+                <Button Color="Color.Primary" Type="ButtonType.Link" To="scheduledtasks"><Icon Name="IconName.StepBackward" Margin="Margin.Is4.FromRight" />All Tasks</Button>
             </BarItem>
         </BarStart>
     </BarMenu>
 </Bar>
-@if(@model.ScheduledTaskId == Guid.Empty)
-{
-    <p>Loading...</p>
-}
-else
-{
 
-<h1>Scheduled Task: @model.Name</h1>
-<p>@model.Description</p>
-
+@if (this.model.ScheduledTaskId == Guid.Empty)
+{
+    <Paragraph>
+        <div class="box">
+            <progress class="progress is-small is-primary" max="100" />
+        </div>
+    </Paragraph>
 }
 
+@if (this.model.ScheduledTaskId == Guid.Empty)
+{
+    <Row>
+        <Column>
+            <Card Margin="Margin.Is4.OnY">
+                <CardHeader>
+                    <CardTitle>
+                        @model.Name<Blazorise.Link To="@($"/scheduledtasks/{model.ScheduledTaskId}/Edit")" Title="Edit"><Icon Name="IconName.Edit" IconSize="IconSize.Large" Margin="Margin.Is4.FromLeft" /></Blazorise.Link>
+                    </CardTitle>
+                </CardHeader>
+                <CardBody>
+                    <CardText>@model.Description</CardText>
+                </CardBody>
+                <CardBody>
+                    <Table>
+                        <TableHeader>
+                            <TableRow>
+                                <TableHeaderCell>Created</TableHeaderCell>
+                                <TableHeaderCell>Modified</TableHeaderCell>
+                                <TableHeaderCell>Last Run</TableHeaderCell>
+                                <TableHeaderCell>Next Run</TableHeaderCell>
+                                <TableHeaderCell>Schedule</TableHeaderCell>
+                            </TableRow>
+                        </TableHeader>
+                        <TableBody>
+
+                            <TableRow>
+                                <TableRowCell>@model.CreatedAt</TableRowCell>
+                                <TableRowCell>@model.ModifiedAt</TableRowCell>
+                                <TableRowCell>@model.LastRunAt</TableRowCell>
+                                <TableRowCell>@model.NextRunAt</TableRowCell>
+                                <TableRowCell>
+                                    @this.GetCronExpressionDescription()
+                                    <Paragraph TextColor="TextColor.Muted">@model.CronExpression</Paragraph>
+                                </TableRowCell>
+                            </TableRow>
+
+                        </TableBody>
+                    </Table>
+                </CardBody>
+            </Card>
+        </Column>
+        <Column>
+            <Card Margin="Margin.Is4.OnY">
+                <CardHeader>
+                    <CardTitle>Up Next...</CardTitle>
+                </CardHeader>
+
+                <Table condition="this.NextRuns is not null && this.NextRuns.Count() > 0">
+                    <TableHeader>
+                        <TableRow>
+
+                            <TableHeaderCell>Future Run Times</TableHeaderCell>
+                        </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                        @foreach (var run in this.NextRuns ?? new List<DateTime>())
+                        {
+
+                            <TableRow @key="run.Ticks">
+                                <TableRowCell>@run</TableRowCell>
+                            </TableRow>
+                        }
+
+                    </TableBody>
+                </Table>
+            </Card>
+        </Column>
+    </Row>
+}
 @code {
     [Parameter]
     public Guid Id { get; set; }
 
     private ScheduledTask model = new();
+    private IEnumerable<DateTime> NextRuns = null!;
 
+    protected string GetCronExpressionDescription()
+    {
+        try
+        {
+            return CronExpressionDescriptor.ExpressionDescriptor.GetDescription(model.CronExpression);
+        }
+        catch (Exception ex)
+        {
+            Logger.LogError(ex, "Unable to parse expression: {CronExpression}", model.CronExpression);
+        }
+
+        return string.Empty;
+    }
+    protected IEnumerable<DateTime> GetNextRuns()
+    {
+        try
+        {
+            var c = CronExpression.Parse(this.model.CronExpression, Cronos.CronFormat.IncludeSeconds);
+            return c.GetOccurrences(model.LastRunAt ?? DateTime.UtcNow, (model.LastRunAt ?? DateTime.UtcNow).AddDays(10), true, true);
+        }
+        catch (Exception ex)
+        {
+            Logger.LogError(ex, "Unable to parse expression: {id}", model.CronExpression);
+            return null!;
+        }
+    }
     protected async override Task OnInitializedAsync()
     {
         try
         {
             model = await scheduledTaskService.GetScheduledTaskAsync(this.Id);
+            this.NextRuns = this.GetNextRuns().Take(5);
         }
         catch (Exception ex)
         {
