@@ -1,8 +1,6 @@
 @page "/scheduledtasks/new"
 @attribute [Authorize]
 
-@using WebScheduler.Api.ViewModels
-@using Microsoft.Extensions.Logging
 @inject ScheduledTaskService scheduledTaskService
 @inject ILogger<New> Logger
 @inject NavigationManager NavigationManager
@@ -40,11 +38,32 @@
             </FieldBody>
         </Field>
     </Validation>
+    <Validation>
+        <Field Horizontal="true">
+            <FieldLabel ColumnSize="ColumnSize.Is2">Schedule</FieldLabel>
+            <FieldBody ColumnSize="ColumnSize.Is10">
+                <TextEdit Placeholder="* * * * *" @bind-Text="@model.CronExpression" @onkeypress="this.UpdateCronDescription" @onchange="this.UpdateCronDescription">
+                    <Feedback>
+                        <ValidationError />
+                    </Feedback>
+                </TextEdit>
+                <Paragraph>@this.CronExpressionDescription</Paragraph>
+
+            </FieldBody>
+
+        </Field>
+    </Validation>
 </Validations>
+
 <Button Color="Color.Primary" Type="ButtonType.Submit" @onclick="HandleValidSubmit" Disabled="@isFormValid">Save</Button>
 
 @code {
-    private SaveScheduledTask model = new();
+    private string CronExpressionDescription = string.Empty;
+
+    private SaveScheduledTask model = new()
+        {
+            CronExpression = $"* * * * *"
+        };
 
     bool isFormValid;
     private void ValidationStatusChange(ValidationsStatusChangedEventArgs e)
@@ -54,6 +73,35 @@
             ValidationStatus.Success => false,
             _ => true,
         };
+    }
+    protected Task UpdateCronDescription(KeyboardEventArgs e)
+    {
+        this.CronExpressionDescription = this.GetCronExpressionDescription(@model.CronExpression.ToString() ?? string.Empty);
+        return Task.CompletedTask;
+    }
+     protected Task UpdateCronDescription(ChangeEventArgs e)
+    {
+        this.CronExpressionDescription = this.GetCronExpressionDescription(@model.CronExpression.ToString() ?? string.Empty);
+        return Task.CompletedTask;
+    }
+    protected override Task OnInitializedAsync()
+    {
+        this.CronExpressionDescription = this.GetCronExpressionDescription(this.model.CronExpression);
+
+        return Task.CompletedTask;
+    }
+    protected string GetCronExpressionDescription(string expression)
+    {
+        try
+        {
+            return CronExpressionDescriptor.ExpressionDescriptor.GetDescription(expression);
+        }
+        catch (Exception ex)
+        {
+            Logger.LogError(ex, "Unable to parse expression: {CronExpression}", expression);
+        }
+
+        return string.Empty;
     }
     private async Task HandleValidSubmit()
     {

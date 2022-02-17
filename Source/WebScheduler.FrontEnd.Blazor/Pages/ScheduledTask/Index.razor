@@ -1,7 +1,6 @@
 @page "/scheduledtasks"
 @attribute [Authorize]
-@using WebScheduler.Api.ViewModels
-@using Microsoft.Extensions.Logging
+
 @inject ILogger<View> Logger
 @inject NavigationManager NavigationManager
 @inject ScheduledTaskService scheduledTaskService
