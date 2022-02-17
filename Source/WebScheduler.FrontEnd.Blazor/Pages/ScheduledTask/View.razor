@@ -1,8 +1,6 @@
 @page "/scheduledtasks/{Id:guid}"
 @attribute [Authorize]
 @using Cronos
-@using WebScheduler.Api.ViewModels
-@using Microsoft.Extensions.Logging
 @inject ILogger<View> Logger
 @inject NavigationManager NavigationManager
 @inject ScheduledTaskService scheduledTaskService
@@ -29,7 +27,7 @@
     </Paragraph>
 }
 
-@if (this.model.ScheduledTaskId == Guid.Empty)
+@if (this.model.ScheduledTaskId != Guid.Empty)
 {
     <Row>
         <Column>
@@ -61,7 +59,7 @@
                                 <TableRowCell>@model.LastRunAt</TableRowCell>
                                 <TableRowCell>@model.NextRunAt</TableRowCell>
                                 <TableRowCell>
-                                    @this.GetCronExpressionDescription()
+                                    @this.CronExpressionDescription
                                     <Paragraph TextColor="TextColor.Muted">@model.CronExpression</Paragraph>
                                 </TableRowCell>
                             </TableRow>
@@ -77,7 +75,15 @@
                     <CardTitle>Up Next...</CardTitle>
                 </CardHeader>
 
-                <Table condition="this.NextRuns is not null && this.NextRuns.Count() > 0">
+               <CardBody>
+    
+                    @if(!this.NextRuns?.Any() ?? false)
+                    {
+                        <Paragraph>There are no runs scheduled in the next 30 days.</Paragraph>
+                    }
+                    else
+                        {
+                            <Table condition="this.NextRuns is not null && this.NextRuns.Count() > 0">
                     <TableHeader>
                         <TableRow>
 
@@ -95,6 +101,8 @@
 
                     </TableBody>
                 </Table>
+                }
+               </CardBody>
             </Card>
         </Column>
     </Row>
@@ -105,6 +113,7 @@
 
     private ScheduledTask model = new();
     private IEnumerable<DateTime> NextRuns = null!;
+    private string CronExpressionDescription = string.Empty;
 
     protected string GetCronExpressionDescription()
     {
@@ -124,7 +133,7 @@
         try
         {
             var c = CronExpression.Parse(this.model.CronExpression, Cronos.CronFormat.IncludeSeconds);
-            return c.GetOccurrences(model.LastRunAt ?? DateTime.UtcNow, (model.LastRunAt ?? DateTime.UtcNow).AddDays(10), true, true);
+            return c.GetOccurrences(model.LastRunAt ?? DateTime.UtcNow, (model.LastRunAt ?? DateTime.UtcNow).AddDays(30), true, true);
         }
         catch (Exception ex)
         {
@@ -138,6 +147,7 @@
         {
             model = await scheduledTaskService.GetScheduledTaskAsync(this.Id);
             this.NextRuns = this.GetNextRuns().Take(5);
+            this.CronExpressionDescription = this.GetCronExpressionDescription();
         }
         catch (Exception ex)
         {

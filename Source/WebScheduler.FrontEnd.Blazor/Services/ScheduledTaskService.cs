@@ -1,11 +1,11 @@
 namespace WebScheduler.FrontEnd.Blazor.Services;
 
 using System.Net.Http.Json;
-using WebScheduler.Api.ViewModels;
 using WebScheduler.Abstractions.Grains.Scheduler;
 using Microsoft.AspNetCore.WebUtilities;
 using System.Text.Json;
 using System.Globalization;
+using WebScheduler.Api.Models.ViewModels;
 
 internal class ScheduledTaskService
 {
