@@ -33,7 +33,8 @@
             </DisplayTemplate>
         </DataGridColumn>
         <DataGridColumn TItem="ScheduledTask" Field="@nameof(ScheduledTask.Description)" Caption="Description" />
-        <DataGridColumn TItem="ScheduledTask" Field="@nameof(ScheduledTask.ScheduledTaskId)" Caption="Schedule">
+        <DataGridColumn TItem="ScheduledTask" Field="@nameof(ScheduledTask.TriggerType)" Caption="Trigger" />
+        <DataGridColumn TItem="ScheduledTask" Field="@nameof(ScheduledTask.CronExpression)" Caption="Schedule">
             <DisplayTemplate>
                 @CronExpressionDescriptor.ExpressionDescriptor.GetDescription(context.CronExpression)
             </DisplayTemplate>

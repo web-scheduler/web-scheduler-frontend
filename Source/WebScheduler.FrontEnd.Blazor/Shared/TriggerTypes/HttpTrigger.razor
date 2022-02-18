@@ -1,0 +1,71 @@
+@using System.ComponentModel.DataAnnotations
+
+<Validation>
+    <Field Horizontal="true">
+        <FieldLabel ColumnSize="ColumnSize.Is2">URL</FieldLabel>
+        <FieldBody ColumnSize="ColumnSize.Is10">
+            <TextEdit Placeholder="URL" @bind-Text="@this.endPointUrl">
+                <Feedback>
+                    <ValidationError />
+                </Feedback>
+            </TextEdit>
+        </FieldBody>
+    </Field>
+</Validation>
+
+    <Field Horizontal="true">
+        <FieldLabel ColumnSize="ColumnSize.Is2">Trigger Type</FieldLabel>
+        <FieldBody ColumnSize="ColumnSize.Is10">
+            <Select TValue="HttpVerb" @bind-SelectedValue="selectedHttpMethod">
+                <ChildContent>
+                    @foreach (var httpVerb in Enum.GetValues(typeof(HttpVerb)))
+                    {
+
+                        <SelectItem @key="@httpVerb" Value="@httpVerb" Disabled="(HttpVerb)httpVerb!=HttpVerb.GET">@httpVerb@((MarkupString)$"{((HttpVerb)httpVerb!=HttpVerb.GET?" ➡️ Coming Soon!":string.Empty)}")</SelectItem>
+                    }
+                </ChildContent>
+            </Select>
+        </FieldBody>
+    </Field>
+@code {
+    private HttpVerb selectedHttpMethod = HttpVerb.GET;
+    private enum HttpVerb
+    {
+        GET = 0,
+        POST = 1,
+        PUT = 2,
+        DELETE = 3,
+        HEAD = 4,
+        PATCH = 5,
+        OPTIONS = 6
+    }
+    [Url] protected string endPointUrl  = string.Empty;
+    [Parameter]
+    public Uri EndPointUri
+    {
+        get
+        {
+            return new(this.endPointUrl);
+        }
+        set { _ = value; }
+    }
+    [Parameter]
+    public HttpMethod HttpMethod
+    {
+        get
+        {
+            return this.selectedHttpMethod switch
+            {
+                HttpVerb.GET => HttpMethod.Get,
+                HttpVerb.POST => HttpMethod.Post,
+                HttpVerb.PUT => HttpMethod.Put,
+                HttpVerb.DELETE => HttpMethod.Delete,
+                HttpVerb.HEAD => HttpMethod.Head,
+                HttpVerb.PATCH => HttpMethod.Patch,
+                HttpVerb.OPTIONS => HttpMethod.Options,
+                _ => throw new ArgumentOutOfRangeException()
+            };
+        }
+        set { _ = value; }
+    }
+}
