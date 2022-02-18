@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk.BlazorWebAssembly">
+<Project Sdk="Microsoft.NET.Sdk.BlazorWebAssembly">
 
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
@@ -57,7 +57,7 @@
     <PackageReference Include="Microsoft.Extensions.Http" Version="6.0.0" />
     <PackageReference Include="System.ComponentModel.Annotations" Version="5.0.0" />
     <PackageReference Include="WebScheduler.Abstractions" Version="0.1.19" />
-    <PackageReference Include="WebScheduler.Api.Models" Version="0.1.27" />
+    <PackageReference Include="WebScheduler.Api.Models" Version="0.1.28" />
   </ItemGroup>
 
   <ItemGroup Label="Project References" Condition=" '$(Configuration)' == 'Debug' ">
