@@ -1,40 +1,44 @@
 @using System.ComponentModel.DataAnnotations
-    <Validation>
-        <Field Horizontal="true">
-            <FieldLabel ColumnSize="ColumnSize.Is2">URL</FieldLabel>
-            <FieldBody ColumnSize="ColumnSize.Is10">
-                <TextEdit Placeholder="URL" @bind-Text="this.EndPointUrl">
-                    <Feedback>
-                        <ValidationError />
-                    </Feedback>
-                </TextEdit>
-            </FieldBody>
-        </Field>
-    </Validation>
-
+<Validation>
     <Field Horizontal="true">
-        <FieldLabel ColumnSize="ColumnSize.Is2">Trigger Type</FieldLabel>
+        <FieldLabel ColumnSize="ColumnSize.Is2">URL</FieldLabel>
         <FieldBody ColumnSize="ColumnSize.Is10">
-            <Select TValue="HttpVerb" @bind-SelectedValue="this.selectedHttpMethod">
-                <ChildContent>
-                    @foreach (var httpVerb in Enum.GetValues(typeof(HttpVerb)))
-                    {
-                        <SelectItem @key="@httpVerb" Value="@httpVerb" Disabled="(HttpVerb)httpVerb!=HttpVerb.GET">@httpVerb@((MarkupString)$"{((HttpVerb)httpVerb!=HttpVerb.GET?" ➡️ Coming Soon!":string.Empty)}")</SelectItem>
-                    }
-                </ChildContent>
-            </Select>
+            <TextEdit Placeholder="URL" @bind-Text="this.EndPointUrl">
+                <Feedback>
+                    <ValidationError />
+                </Feedback>
+            </TextEdit>
         </FieldBody>
     </Field>
+</Validation>
+
+<Field Horizontal="true">
+    <FieldLabel ColumnSize="ColumnSize.Is2">Trigger Type</FieldLabel>
+    <FieldBody ColumnSize="ColumnSize.Is10">
+        <Select TValue="HttpVerb" @bind-SelectedValue="this.selectedHttpMethod">
+            <ChildContent>
+                @foreach (var httpVerb in Enum.GetValues(typeof(HttpVerb)))
+                {
+                    <SelectItem @key="@httpVerb" Value="@httpVerb" Disabled="(HttpVerb)httpVerb!=HttpVerb.GET">@httpVerb@((MarkupString)$"{((HttpVerb)httpVerb!=HttpVerb.GET?" ➡️ Coming Soon!":string.Empty)}")</SelectItem>
+                }
+            </ChildContent>
+        </Select>
+    </FieldBody>
+</Field>
 @code {
-    protected override void OnInitialized() => this.model.HttpTriggerProperties.EndPointUrl ??= new("https://example.com");
-    [CascadingParameter]
-    public SaveScheduledTask model { get; set; } = default!;
+
+    [CascadingParameter(Name = "Model")]
+    public SaveScheduledTask? model { get; set; }
 
     [Required]
     private HttpVerb selectedHttpMethod
     {
         set
         {
+            if (this.model is null)
+            {
+                return;
+            }
             this.model.HttpTriggerProperties.HttpMethod = value switch
             {
                 HttpVerb.GET => HttpMethod.Get,
@@ -49,7 +53,7 @@
         }
         get
         {
-            return this.model.HttpTriggerProperties.HttpMethod.Method switch
+            return this.model?.HttpTriggerProperties.HttpMethod.Method switch
             {
                 "GET" => HttpVerb.GET,
                 "POST" => HttpVerb.POST,
@@ -74,16 +78,22 @@
         PATCH = 5,
         OPTIONS = 6
     }
-    [Url]
+
+    [DataType(DataType.Url)]
+    [Url()]
     protected string EndPointUrl
     {
         get
         {
-            return this.model.HttpTriggerProperties.EndPointUrl?.ToString() ?? "https://example.com";
+            return this.model?.HttpTriggerProperties.EndPointUrl?.ToString() ?? "https://example.com";
         }
         set
         {
+            if (this.model is null)
+            {
+                return;
+            }
             this.model.HttpTriggerProperties.EndPointUrl = new(value);
         }
     }
-    }
+}

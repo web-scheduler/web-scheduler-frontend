@@ -78,7 +78,7 @@
         <Card>
             <CardHeader>@this.model.TriggerType Configuration</CardHeader>
             <CardBody>
-                <CascadingValue Value="this.model">
+                <CascadingValue Value="@this.model" Name="Model">
 
                     <DynamicComponent Type="@this.selectedTriggerType" />
                 </CascadingValue>
