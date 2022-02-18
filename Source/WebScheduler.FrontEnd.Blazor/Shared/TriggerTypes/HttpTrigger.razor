@@ -79,7 +79,7 @@
     {
         get
         {
-            return this.model.HttpTriggerProperties.EndPointUrl.ToString();
+            return this.model.HttpTriggerProperties.EndPointUrl?.ToString() ?? "https://example.com";
         }
         set
         {
