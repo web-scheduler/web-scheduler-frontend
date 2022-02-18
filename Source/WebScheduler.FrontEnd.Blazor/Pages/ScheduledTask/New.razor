@@ -78,8 +78,10 @@
         <Card>
             <CardHeader>@this.model.TriggerType Configuration</CardHeader>
             <CardBody>
+                <CascadingValue Value="this.model">
 
-                <DynamicComponent Type="@this.selectedTriggerType" />
+                    <DynamicComponent Type="@this.selectedTriggerType" />
+                </CascadingValue>
 
             </CardBody>
         </Card>
@@ -91,9 +93,10 @@
 @code {
     private string CronExpressionDescription = string.Empty;
 
-    private SaveScheduledTask model = new()
+    protected SaveScheduledTask model { get; set; } = new()
         {
-            CronExpression = $"* * * * *"
+            CronExpression = $"* * * * *",
+
         };
 
     bool isFormValid;
