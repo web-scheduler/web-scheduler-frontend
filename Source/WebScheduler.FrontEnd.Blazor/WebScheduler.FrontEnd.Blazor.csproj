@@ -56,8 +56,17 @@
     <PackageReference Include="Microsoft.AspNetCore.WebUtilities" Version="2.2.0" />
     <PackageReference Include="Microsoft.Extensions.Http" Version="6.0.0" />
     <PackageReference Include="System.ComponentModel.Annotations" Version="5.0.0" />
-    <PackageReference Include="WebScheduler.Abstractions" Version="0.1.17" />
-    <PackageReference Include="WebScheduler.Api.Models" Version="0.1.27" />
+    <PackageReference Include="WebScheduler.Abstractions" Version="0.1.19" />
+    <PackageReference Include="WebScheduler.Api.Models" Version="0.1.28" />
+  </ItemGroup>
+
+  <!--<ItemGroup Label="Project References" Condition=" '$(Configuration)' == 'Debug' ">
+    <ProjectReference Include="..\..\..\web-scheduler-api\Source\WebScheduler.Api.Models\WebScheduler.Api.Models.csproj" />
+    <ProjectReference Include="..\..\..\web-scheduler\Source\WebScheduler.Abstractions\WebScheduler.Abstractions.csproj" />
+  </ItemGroup>-->
+
+  <ItemGroup>
+    <PackageReference Update="Microsoft.VisualStudio.Threading.Analyzers" Version="17.1.46" />
   </ItemGroup>
 
 </Project>

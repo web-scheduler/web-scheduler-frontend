@@ -31,7 +31,7 @@
 {
     <Row>
         <Column>
-            <Card Margin="Margin.Is4.OnY">
+            <Card>
                 <CardHeader>
                     <CardTitle>
                         @model.Name<Blazorise.Link To="@($"/scheduledtasks/{model.ScheduledTaskId}/Edit")" Title="Edit"><Icon Name="IconName.Edit" IconSize="IconSize.Large" Margin="Margin.Is4.FromLeft" /></Blazorise.Link>
@@ -75,36 +75,64 @@
                     <CardTitle>Up Next...</CardTitle>
                 </CardHeader>
 
-               <CardBody>
-    
-                    @if(!this.NextRuns?.Any() ?? false)
+                <CardBody>
+
+                    @if (!this.NextRuns?.Any() ?? false)
                     {
                         <Paragraph>There are no runs scheduled in the next 30 days.</Paragraph>
                     }
                     else
-                        {
-                            <Table condition="this.NextRuns is not null && this.NextRuns.Count() > 0">
-                    <TableHeader>
-                        <TableRow>
+                    {
+                        <Table>
+                            <TableHeader>
+                                <TableRow>
+                                    <TableHeaderCell>Future Run Times</TableHeaderCell>
+                                </TableRow>
+                            </TableHeader>
+                            <TableBody>
+                                @foreach (var run in this.NextRuns ?? new List<DateTime>())
+                                {
 
-                            <TableHeaderCell>Future Run Times</TableHeaderCell>
-                        </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                        @foreach (var run in this.NextRuns ?? new List<DateTime>())
-                        {
+                                    <TableRow @key="run.Ticks">
+                                        <TableRowCell>@run</TableRowCell>
+                                    </TableRow>
+                                }
 
-                            <TableRow @key="run.Ticks">
-                                <TableRowCell>@run</TableRowCell>
-                            </TableRow>
-                        }
-
-                    </TableBody>
-                </Table>
-                }
-               </CardBody>
+                            </TableBody>
+                        </Table>
+                    }
+                </CardBody>
             </Card>
         </Column>
+    </Row>
+    <Row>
+        <Card>
+            <CardHeader>
+                <CardTitle>Trigger Details</CardTitle>
+            </CardHeader>
+            <CardBody>@switch (this.model.TriggerType)
+                {
+                    case TaskTriggerType.HttpTrigger:
+                        {
+                            <Table>
+                                <TableHeader>
+                                    <TableRow>
+                                        <TableHeaderCell>Method</TableHeaderCell>
+                                        <TableHeaderCell>URL</TableHeaderCell>
+                                    </TableRow>
+                                </TableHeader>
+                                <TableBody>
+                                    <TableRow>
+                                        <TableRowCell>@this.model.HttpTriggerProperties.HttpMethod</TableRowCell>
+                                        <TableRowCell><Blazorise.Link To="@this.model.HttpTriggerProperties.EndPointUrl" Target="Target.Blank">@this.model.HttpTriggerProperties.EndPointUrl<Icon Name="IconName.ExternalLinkSquareAlt" Margin="Margin.Is2.FromLeft" /></Blazorise.Link></TableRowCell>
+                                    </TableRow>
+                                </TableBody>
+                            </Table>
+                            break;
+                        }
+                }
+            </CardBody>
+        </Card>
     </Row>
 }
 @code {

@@ -9,7 +9,7 @@
 
 <PageTitle>My Scheduled Tasks</PageTitle>
 
-<h1>My Scheduled Tasks</h1>
+<Heading Size="HeadingSize.Is1">New Scheduled Task</Heading>
 
 
 <Validations Mode="ValidationMode.Auto" Model="@model" StatusChanged="this.ValidationStatusChange">
@@ -53,6 +53,39 @@
 
         </Field>
     </Validation>
+    <Validation>
+        <Field Horizontal="true">
+            <FieldLabel ColumnSize="ColumnSize.Is2">Trigger Type</FieldLabel>
+            <FieldBody ColumnSize="ColumnSize.Is10">
+                <Select TValue="WebScheduler.Abstractions.Grains.Scheduler.TaskTriggerType" @bind-SelectedValue="this.model.TriggerType" @onchange="OnHttpTriggerDropDownChange">
+                    <ChildContent>
+                        @foreach (var triggerType in Enum.GetValues(typeof(WebScheduler.Abstractions.Grains.Scheduler.TaskTriggerType)))
+                        {
+                            <SelectItem @key="@triggerType" Value="@triggerType">@triggerType</SelectItem>
+                        }
+                    </ChildContent>
+                    <Feedback>
+                        <ValidationError />
+                    </Feedback>
+                </Select>
+
+            </FieldBody>
+
+        </Field>
+    </Validation>
+    @if (this.selectedTriggerType is not null)
+    {
+        <Card>
+            <CardHeader>@this.model.TriggerType Configuration</CardHeader>
+            <CardBody>
+                <CascadingValue Value="@this.model" Name="Model">
+
+                    <DynamicComponent Type="@this.selectedTriggerType" />
+                </CascadingValue>
+
+            </CardBody>
+        </Card>
+    }
 </Validations>
 
 <Button Color="Color.Primary" Type="ButtonType.Submit" @onclick="HandleValidSubmit" Disabled="@isFormValid">Save</Button>
@@ -60,12 +93,16 @@
 @code {
     private string CronExpressionDescription = string.Empty;
 
-    private SaveScheduledTask model = new()
+    protected SaveScheduledTask model { get; set; } = new()
         {
-            CronExpression = $"* * * * *"
+            CronExpression = $"* * * * *",
+
         };
 
     bool isFormValid;
+
+    private Type? selectedTriggerType;
+
     private void ValidationStatusChange(ValidationsStatusChangedEventArgs e)
     {
         isFormValid = e.Status switch
@@ -74,12 +111,17 @@
             _ => true,
         };
     }
+    private void OnHttpTriggerDropDownChange(ChangeEventArgs e)
+    {
+        this.selectedTriggerType = e.Value?.ToString()?.Length > 0 ?
+            Type.GetType($"WebScheduler.FrontEnd.Blazor.Shared.TriggerTypes.{e.Value}") : null;
+    }
     protected Task UpdateCronDescription(KeyboardEventArgs e)
     {
         this.CronExpressionDescription = this.GetCronExpressionDescription(@model.CronExpression.ToString() ?? string.Empty);
         return Task.CompletedTask;
     }
-     protected Task UpdateCronDescription(ChangeEventArgs e)
+    protected Task UpdateCronDescription(ChangeEventArgs e)
     {
         this.CronExpressionDescription = this.GetCronExpressionDescription(@model.CronExpression.ToString() ?? string.Empty);
         return Task.CompletedTask;
@@ -87,7 +129,7 @@
     protected override Task OnInitializedAsync()
     {
         this.CronExpressionDescription = this.GetCronExpressionDescription(this.model.CronExpression);
-
+        this.selectedTriggerType = Type.GetType($"WebScheduler.FrontEnd.Blazor.Shared.TriggerTypes.{this.model.TriggerType}");
         return Task.CompletedTask;
     }
     protected string GetCronExpressionDescription(string expression)

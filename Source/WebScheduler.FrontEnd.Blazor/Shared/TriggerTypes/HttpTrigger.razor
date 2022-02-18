@@ -1,0 +1,30 @@
+@using System.ComponentModel.DataAnnotations
+<Validation>
+    <Field Horizontal="true">
+        <FieldLabel ColumnSize="ColumnSize.Is2">URL</FieldLabel>
+        <FieldBody ColumnSize="ColumnSize.Is10">
+            <TextEdit Placeholder="URL" @bind-Text="this.model.HttpTriggerProperties.EndPointUrl">
+                <Feedback>
+                    <ValidationError />
+                </Feedback>
+            </TextEdit>
+        </FieldBody>
+    </Field>
+</Validation>
+
+<Field Horizontal="true">
+    <FieldLabel ColumnSize="ColumnSize.Is2">Trigger Type</FieldLabel>
+    <FieldBody ColumnSize="ColumnSize.Is10">
+        <Select @bind-SelectedValue="this.model.HttpTriggerProperties.HttpMethod">
+            <ChildContent>
+                <SelectItem Value="HttpMethod.Get">@HttpMethod.Get</SelectItem>
+                <SelectItem Value="HttpMethod.Post" Disabled="true">@HttpMethod.Post ➡️ Coming Soon)</SelectItem>
+            </ChildContent>
+        </Select>
+    </FieldBody>
+</Field>
+
+@code {
+    [CascadingParameter(Name = "Model")]
+    public SaveScheduledTask model { get; set; } = default!;
+}
