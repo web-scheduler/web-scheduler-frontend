@@ -5,15 +5,15 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <UserSecretsId>2bb7f517-3302-4d0e-be84-bfcef9c61238</UserSecretsId>
-    <BlazorEnableTimeZoneSupport>false</BlazorEnableTimeZoneSupport>
-    <BlazorWebAssemblyPreserveCollationData>false</BlazorWebAssemblyPreserveCollationData>
+    <BlazorEnableTimeZoneSupport>true</BlazorEnableTimeZoneSupport>
+    <BlazorWebAssemblyPreserveCollationData>true</BlazorWebAssemblyPreserveCollationData>
     <BlazorWebAssemblyI18NAssemblies>none</BlazorWebAssemblyI18NAssemblies>
-    <InvariantGlobalization>false</InvariantGlobalization>
+    <InvariantGlobalization>true</InvariantGlobalization>
 
 
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)'=='Release'">
+  <PropertyGroup>
     <PublishTrimmed>true</PublishTrimmed>
     <TrimMode>link</TrimMode>
     <TrimmerRemoveSymbols>true</TrimmerRemoveSymbols>
@@ -23,13 +23,12 @@
     <HttpActivityPropagationSupport>false</HttpActivityPropagationSupport>
     <MetadataUpdaterSupport>false</MetadataUpdaterSupport>
     <UseNativeHttpHandler>true</UseNativeHttpHandler>
-    <UseSystemResourceKeys>false</UseSystemResourceKeys>
-
+    <UseSystemResourceKeys>true</UseSystemResourceKeys>
+    <EnableTrimAnalyzer>true</EnableTrimAnalyzer>
   </PropertyGroup>
-  <ItemGroup Condition="'$(Configuration)'=='Release'">
+  <ItemGroup>
     <BlazorLinkerDescriptor Include="LinkerConfig.xml" />
     <TrimmerRootAssembly Include="WebScheduler.Api.Models" />
-    <TrimmerRootAssembly Include="WebScheduler.Abstractions" />
     <TrimmableAssembly Include="Microsoft.CodeAnalysis" />
     <TrimmableAssembly Include="Microsoft.CodeAnalysis.CSharp" />
     <TrimmableAssembly Include="Microsoft.CodeAnalysis.CSharp.Scripting" />
