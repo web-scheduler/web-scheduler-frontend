@@ -27,5 +27,5 @@ builder.Services.AddHttpClient<ScheduledTaskService>(client => client.BaseAddres
 builder.Services.AddOidcAuthentication(options => builder.Configuration.Bind("IdentitySettings", options.ProviderOptions));
 
 builder.Services.AddAuthorizationCore(c => { });
-
+var x = new HttpMethod(HttpMethod.Get.Method);
 await builder.Build().RunAsync();

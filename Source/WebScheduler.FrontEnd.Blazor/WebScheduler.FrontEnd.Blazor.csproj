@@ -28,7 +28,6 @@
   </PropertyGroup>
   <ItemGroup>
     <BlazorLinkerDescriptor Include="LinkerConfig.xml" />
-    <TrimmerRootAssembly Include="WebScheduler.Api.Models" />
     <TrimmableAssembly Include="Microsoft.CodeAnalysis" />
     <TrimmableAssembly Include="Microsoft.CodeAnalysis.CSharp" />
     <TrimmableAssembly Include="Microsoft.CodeAnalysis.CSharp.Scripting" />
