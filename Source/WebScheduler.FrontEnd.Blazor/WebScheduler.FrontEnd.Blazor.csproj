@@ -29,7 +29,7 @@
   <ItemGroup Condition="'$(Configuration)'=='Release'">
     <BlazorLinkerDescriptor Include="LinkerConfig.xml" />
     <TrimmerRootAssembly Include="WebScheduler.Api.Models" />
-    <TrimmerRootAssembly Include="WebScheduler.Abstraction" />
+    <TrimmerRootAssembly Include="WebScheduler.Abstractions" />
     <TrimmableAssembly Include="Microsoft.CodeAnalysis" />
     <TrimmableAssembly Include="Microsoft.CodeAnalysis.CSharp" />
     <TrimmableAssembly Include="Microsoft.CodeAnalysis.CSharp.Scripting" />
