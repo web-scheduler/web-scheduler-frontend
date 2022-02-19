@@ -7,6 +7,7 @@ using System.Text.Json;
 using System.Globalization;
 using WebScheduler.Api.Models.ViewModels;
 using System.Text.Json.Serialization;
+using WebScheduler.FrontEnd.Blazor.Converters;
 
 internal class ScheduledTaskService
 {
@@ -20,6 +21,7 @@ internal class ScheduledTaskService
         this.client = client;
         jso = new JsonSerializerOptions(JsonSerializerDefaults.Web);
         jso.Converters.Add(new JsonStringEnumConverter());
+        jso.Converters.Add(new HttpMethodConverter());
     }
 
     public async Task<ScheduledTask> GetScheduledTaskAsync(Guid id)
