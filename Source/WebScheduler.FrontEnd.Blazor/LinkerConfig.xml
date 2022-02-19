@@ -20,7 +20,7 @@
     <type fullname="System.Linq.Expressions*" />
   </assembly>
   <assembly fullname="System.Net.Http">
-    <type fullname="System.Net.Http.HttpMethod" />
+    <type fullname="System.Net.Http.HttpMethod" preserve="all" />
   </assembly>
   <!--
     In this example, the app's entry point assembly is listed. The assembly
