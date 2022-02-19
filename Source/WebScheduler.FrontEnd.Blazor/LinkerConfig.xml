@@ -19,13 +19,6 @@
     -->
     <type fullname="System.Linq.Expressions*" />
   </assembly>
-<assembly fullname="System.Text.Json">
-    <!--
-      System.Linq.Expressions* is required by Json.NET and any 
-      expression.Compile caller. The assembly isn't stripped.
-    -->
-    <type fullname="System.Text.Json.Serialization.Converters*" />
-  </assembly>
   <assembly fullname="System.Net.Http">
     <type fullname="System.Net.Http.HttpMethod" preserve="all">
       <method signature="System.Void .ctor(System.String)" />

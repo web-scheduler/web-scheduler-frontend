@@ -1,4 +1,3 @@
-
 using Blazorise;
 using Blazorise.Bootstrap5;
 using Blazorise.Icons.FontAwesome;
@@ -26,6 +25,5 @@ builder.Services.AddHttpClient<ScheduledTaskService>(client => client.BaseAddres
 
 builder.Services.AddOidcAuthentication(options => builder.Configuration.Bind("IdentitySettings", options.ProviderOptions));
 
-builder.Services.AddAuthorizationCore(c => { });
-var x = new HttpMethod(HttpMethod.Get.Method);
+builder.Services.AddAuthorizationCore(_ => { });
 await builder.Build().RunAsync();
