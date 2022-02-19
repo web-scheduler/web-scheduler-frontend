@@ -25,4 +25,5 @@
   -->
   <assembly fullname="WebScheduler.FrondEnd.Blazor" />
   <assembly fullname="WebScheduler.Api.Models" />
+  <assembly fullname="WebScheduler.Abstractions" />
 </linker>
