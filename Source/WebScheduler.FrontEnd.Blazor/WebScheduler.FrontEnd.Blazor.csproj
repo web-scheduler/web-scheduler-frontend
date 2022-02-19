@@ -8,7 +8,7 @@
     <BlazorEnableTimeZoneSupport>true</BlazorEnableTimeZoneSupport>
     <BlazorWebAssemblyPreserveCollationData>true</BlazorWebAssemblyPreserveCollationData>
     <BlazorWebAssemblyI18NAssemblies>none</BlazorWebAssemblyI18NAssemblies>
-    <InvariantGlobalization>true</InvariantGlobalization>
+    <InvariantGlobalization>false</InvariantGlobalization>
 
 
   </PropertyGroup>
@@ -54,8 +54,8 @@
     <PackageReference Include="Microsoft.AspNetCore.WebUtilities" Version="2.2.0" />
     <PackageReference Include="Microsoft.Extensions.Http" Version="6.0.0" />
     <PackageReference Include="System.ComponentModel.Annotations" Version="5.0.0" />
-    <PackageReference Include="WebScheduler.Abstractions" Version="0.1.21" />
-    <PackageReference Include="WebScheduler.Api.Models" Version="0.1.29" />
+    <PackageReference Include="WebScheduler.Abstractions" Version="0.1.23" />
+    <PackageReference Include="WebScheduler.Api.Models" Version="0.1.30" />
   </ItemGroup>
 
   <!--<ItemGroup >

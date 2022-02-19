@@ -1,3 +1,4 @@
+using System.Globalization;
 using Blazorise;
 using Blazorise.Bootstrap5;
 using Blazorise.Icons.FontAwesome;
@@ -10,7 +11,10 @@ using WebScheduler.FrontEnd.Blazor.Services;
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 
 builder.Services
-  .AddBlazorise(options => options.ChangeTextOnKeyPress = true)
+  .AddBlazorise(options =>
+  {
+      options.ChangeTextOnKeyPress = true;
+  })
   .AddBootstrap5Providers()
   .AddFontAwesomeIcons();
 
