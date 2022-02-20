@@ -1,4 +1,4 @@
-namespace WebScheduler.FrontEnd.Blazor.Services;
+namespace WebScheduler.FrontEnd.BlazorApp.Services;
 
 using System.Net.Http.Json;
 using WebScheduler.Abstractions.Grains.Scheduler;
