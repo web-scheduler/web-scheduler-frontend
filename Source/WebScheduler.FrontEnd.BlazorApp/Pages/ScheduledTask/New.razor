@@ -6,6 +6,7 @@
 @inject NavigationManager NavigationManager
 @inject IPageProgressService PageProgressService
 @inject INotificationService NotificationService
+@inject IAnalytics GlobalTracking
 
 <PageTitle>My Scheduled Tasks</PageTitle>
 
@@ -114,7 +115,7 @@
     private void OnHttpTriggerDropDownChange(ChangeEventArgs e)
     {
         this.selectedTriggerType = e.Value?.ToString()?.Length > 0 ?
-            Type.GetType($"WebScheduler.FrontEnd.Blazor.Shared.TriggerTypes.{e.Value}") : null;
+            Type.GetType($"WebScheduler.FrontEnd.BlazorApp.Shared.TriggerTypes.{e.Value}") : null;
     }
     protected Task UpdateCronDescription(KeyboardEventArgs e)
     {
@@ -129,7 +130,7 @@
     protected override Task OnInitializedAsync()
     {
         this.CronExpressionDescription = this.GetCronExpressionDescription(this.model.CronExpression);
-        this.selectedTriggerType = Type.GetType($"WebScheduler.FrontEnd.Blazor.Shared.TriggerTypes.{this.model.TriggerType}");
+        this.selectedTriggerType = Type.GetType($"WebScheduler.FrontEnd.BlazorApp.Shared.TriggerTypes.{this.model.TriggerType}");
         return Task.CompletedTask;
     }
     protected string GetCronExpressionDescription(string expression)
@@ -154,6 +155,12 @@
             var result = await scheduledTaskService.CreateScheduledTaskAsync(model);
             if (result != null)
             {
+                await GlobalTracking.TrackEvent("create_task", new
+                {
+                    Id = result.ScheduledTaskId,
+                    TriggerType = result.TriggerType.ToString()
+                });
+
                 NavigationManager.NavigateTo($"scheduledtasks/{result.ScheduledTaskId}");
             }
         }
