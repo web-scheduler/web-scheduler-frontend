@@ -1,5 +1,8 @@
+@using System.Security.Claims
 @inherits LayoutComponentBase
-
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject IJSRuntime JSRuntime
+@inject IAnalytics GlobalTracking
 <div class="page">
     <div class="sidebar">
         <NavMenu />
@@ -16,3 +19,48 @@
         </article>
     </main>
 </div>
+@code {
+
+    private bool authenticated;
+
+    protected override void OnInitialized()
+    {
+        Task<AuthenticationState> _currentAuthenticationStateTask;
+
+        AuthenticationStateProvider.AuthenticationStateChanged += OnAuthenticationStateChanged;
+
+        _currentAuthenticationStateTask =
+            AuthenticationStateProvider.GetAuthenticationStateAsync();
+
+        OnAuthenticationStateChanged(_currentAuthenticationStateTask);
+    }
+
+    private void OnAuthenticationStateChanged(Task<AuthenticationState> authenticationStateTask)
+    {
+        _ = InvokeAsync(async () =>
+        {
+            var authState = await authenticationStateTask;
+
+            var user = authState.User;
+
+            authenticated = user.Identity?.IsAuthenticated ?? false;
+
+            //Global Site Tag Tracking Code (gtag.js):
+            //gtag('set', {'user_id': 'USER_ID'}); // Set
+            //Universal Analytics Tracking Code (analytics.js):
+            //ga('set', 'userId', 'USER_ID'); // Set the user ID using signed-in user_id.
+            if (authenticated)
+            {
+                await this.JSRuntime.InvokeVoidAsync("ga", "set", "userid", user.Claims.First(c => c.Type == ClaimTypes.NameIdentifier)?.Value);
+                await GlobalTracking.TrackEvent("login", new
+                {
+                    method=user.Claims.First(c => c.Type == "idp")?.Value ?? "unknown"
+                });
+
+                
+            }
+
+            //StateHasChanged();
+        });
+    }
+  }

@@ -31,6 +31,6 @@ builder.Services.AddOidcAuthentication(options => builder.Configuration.Bind("Id
 
 builder.Services.AddAuthorizationCore(_ => { });
 
-builder.Services.AddGoogleAnalytics(builder.Configuration["GoogleAnalytics:UA"]);
+builder.Services.AddGoogleAnalytics(builder.Configuration["GoogleAnalytics:UA"], builder.HostEnvironment.IsDevelopment());
 
 await builder.Build().RunAsync();
