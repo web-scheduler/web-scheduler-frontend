@@ -1,12 +1,12 @@
-using System.Globalization;
+using Blazor.Analytics;
 using Blazorise;
 using Blazorise.Bootstrap5;
 using Blazorise.Icons.FontAwesome;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
-using WebScheduler.FrontEnd.Blazor;
-using WebScheduler.FrontEnd.Blazor.Services;
+using WebScheduler.FrontEnd.BlazorApp;
+using WebScheduler.FrontEnd.BlazorApp.Services;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 
@@ -30,4 +30,7 @@ builder.Services.AddHttpClient<ScheduledTaskService>(client => client.BaseAddres
 builder.Services.AddOidcAuthentication(options => builder.Configuration.Bind("IdentitySettings", options.ProviderOptions));
 
 builder.Services.AddAuthorizationCore(_ => { });
+
+builder.Services.AddGoogleAnalytics(builder.Configuration["GoogleAnalytics:UA"]);
+
 await builder.Build().RunAsync();

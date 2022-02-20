@@ -2,6 +2,7 @@
 using System.Text.Json.Serialization;
 using WebScheduler.Api.Models.ViewModels;
 
+
 [JsonSerializable(typeof(SaveScheduledTask))]
 [JsonSerializable(typeof(SaveScheduledTask[]))]
 [JsonSerializable(typeof(ScheduledTask))]

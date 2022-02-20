@@ -36,6 +36,8 @@
   
   <ItemGroup>
     
+    <PackageReference Include="Blazor-Analytics" Version="3.10.0" />
+    
     <PackageReference Include="Blazorise.Bootstrap5" Version="0.9.5.5" />
     
     <PackageReference Include="Blazorise.DataGrid" Version="0.9.5.5" />
