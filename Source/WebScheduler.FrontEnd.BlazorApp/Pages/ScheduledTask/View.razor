@@ -5,7 +5,7 @@
 @inject NavigationManager NavigationManager
 @inject ScheduledTaskService scheduledTaskService
 
-<PageTitle>My Scheduled Tasks</PageTitle>
+<PageTitle>My Scheduled Tasks - Web Scheduler</PageTitle>
 
 <Bar Breakpoint="Breakpoint.Desktop">
 
@@ -49,6 +49,7 @@
                                 <TableHeaderCell>Last Run</TableHeaderCell>
                                 <TableHeaderCell>Next Run</TableHeaderCell>
                                 <TableHeaderCell>Schedule</TableHeaderCell>
+                                <TableHeaderCell>Enabled</TableHeaderCell>
                             </TableRow>
                         </TableHeader>
                         <TableBody>
@@ -61,6 +62,9 @@
                                 <TableRowCell>
                                     @this.CronExpressionDescription
                                     <Paragraph TextColor="TextColor.Muted">@model.CronExpression</Paragraph>
+                                </TableRowCell>
+                                <TableRowCell>
+                                    <Switch TValue="bool" @bind-Checked="@model.IsEnabled" Disabled="true"/>
                                 </TableRowCell>
                             </TableRow>
 
@@ -110,7 +114,8 @@
             <CardHeader>
                 <CardTitle>Trigger Details</CardTitle>
             </CardHeader>
-            <CardBody>@switch (this.model.TriggerType)
+            <CardBody>
+                @switch (this.model.TriggerType)
                 {
                     case TaskTriggerType.HttpTrigger:
                         {
@@ -179,7 +184,7 @@
         }
         catch (Exception ex)
         {
-            Logger.LogError(ex, "Error getting scheduled task: {id}", model.ScheduledTaskId);
+            Logger.LogError(ex, "Error getting scheduled task: {id}", this.Id);
         }
 
     }

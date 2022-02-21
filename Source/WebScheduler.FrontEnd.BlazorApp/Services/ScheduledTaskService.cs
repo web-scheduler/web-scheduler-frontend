@@ -77,4 +77,31 @@ internal class ScheduledTaskService
             throw;
         }
     }
+
+
+    public async Task<ScheduledTask> UpdateScheduledTaskAsync(Guid id, SaveScheduledTask saveScheduledTask)
+    {
+        try
+        {
+            var result = await this.client.PutAsJsonAsync($"ScheduledTasks/{id}?api-version=1.0", saveScheduledTask, jso);
+            _ = result.EnsureSuccessStatusCode();
+            var scheduledTask = await result.Content.ReadFromJsonAsync<ScheduledTask>(jso);
+            if (scheduledTask != null)
+            {
+                return scheduledTask;
+            }
+            throw new Exception("Unable to update scheduled task.");
+        }
+        catch (ScheduledTaskNotFoundException scheduledTaskNotFoundException)
+        {
+            this.logger.LogError(scheduledTaskNotFoundException, "Scheduled task not found");
+            throw;
+        }
+        catch (Exception ex)
+        {
+            this.logger.LogError(ex, "Scheduled task not found");
+            // TODO: Handle other errors
+            throw;
+        }
+    }
 }
