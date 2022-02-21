@@ -7,6 +7,7 @@ using System.Text.Json;
 using System.Globalization;
 using WebScheduler.Api.Models.ViewModels;
 using System.Text.Json.Serialization;
+using WebScheduler.FrontEnd.BlazorApp.Helpers;
 
 internal class ScheduledTaskService
 {
@@ -33,9 +34,11 @@ internal class ScheduledTaskService
                 _ => result
             };
         }
-        catch (Exception)
+        catch (Exception ex)
         {
-            throw new ScheduledTaskNotFoundException(id);
+            this.logger.LogError(ex, "error getting scheduled task");
+
+            throw;
         }
     }
 
@@ -64,6 +67,60 @@ internal class ScheduledTaskService
                 return scheduledTask;
             }
             throw new Exception("Unable to create scheduled task.");
+        }
+        catch (ScheduledTaskNotFoundException scheduledTaskNotFoundException)
+        {
+            this.logger.LogError(scheduledTaskNotFoundException, "Scheduled task not found");
+            throw;
+        }
+        catch (Exception ex)
+        {
+            this.logger.LogError(ex, "Scheduled task not found");
+            // TODO: Handle other errors
+            throw;
+        }
+    }
+
+    public async Task<ScheduledTask> UpdateScheduledTaskAsync(Guid id, SaveScheduledTask saveScheduledTask)
+    {
+        try
+        {
+            var result = await this.client.PutAsJsonAsync($"ScheduledTasks/{id}?api-version=1.0", saveScheduledTask, jso);
+            _ = result.EnsureSuccessStatusCode();
+            var scheduledTask = await result.Content.ReadFromJsonAsync<ScheduledTask>(jso);
+            if (scheduledTask != null)
+            {
+                return scheduledTask;
+            }
+            throw new Exception("Unable to update scheduled task.");
+        }
+        catch (ScheduledTaskNotFoundException scheduledTaskNotFoundException)
+        {
+            this.logger.LogError(scheduledTaskNotFoundException, "Scheduled task not found");
+            throw;
+        }
+        catch (Exception ex)
+        {
+            this.logger.LogError(ex, "Scheduled task not found");
+            // TODO: Handle other errors
+            throw;
+        }
+    }
+
+    public async Task<ScheduledTask> PatchScheduledTaskAsync(Guid id, SaveScheduledTask original, SaveScheduledTask updated)
+    {
+        try
+        {
+            var patch = PatchHelper.CompareObjects(original, updated);
+
+            var result = await this.client.PatchAsync($"ScheduledTasks/{id}?api-version=1.0", patch);
+            _ = result.EnsureSuccessStatusCode();
+            var scheduledTask = await result.Content.ReadFromJsonAsync<ScheduledTask>(jso);
+            if (scheduledTask != null)
+            {
+                return scheduledTask;
+            }
+            throw new Exception("Unable to update scheduled task.");
         }
         catch (ScheduledTaskNotFoundException scheduledTaskNotFoundException)
         {

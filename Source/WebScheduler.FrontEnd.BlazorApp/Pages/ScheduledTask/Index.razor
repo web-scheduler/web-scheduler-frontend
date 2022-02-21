@@ -4,6 +4,8 @@
 @inject ILogger<View> Logger
 @inject NavigationManager NavigationManager
 @inject ScheduledTaskService scheduledTaskService
+@inject IPageProgressService PageProgressService
+@inject INotificationService NotificationService
 
 <PageTitle>My Scheduled Tasks</PageTitle>
 <Bar Breakpoint="Breakpoint.Desktop">
@@ -39,12 +41,12 @@
                 @CronExpressionDescriptor.ExpressionDescriptor.GetDescription(context.CronExpression)
             </DisplayTemplate>
         </DataGridColumn>
-        
+
         <DataGridColumn TItem="ScheduledTask" Field="@nameof(ScheduledTask.LastRunAt)" Caption="Last Run" />
-        <DataGridColumn TItem="ScheduledTask" Field="@nameof(ScheduledTask.NextRunAt)" Caption="Next Run" />    
+        <DataGridColumn TItem="ScheduledTask" Field="@nameof(ScheduledTask.NextRunAt)" Caption="Next Run" />
         <DataGridColumn TItem="ScheduledTask" Field="@nameof(ScheduledTask.IsEnabled)" Caption="Enabled">
             <DisplayTemplate>
-                <Switch TValue="bool" Value="@context.IsEnabled" Disabled="true" />
+                <Switch TValue="bool" Checked="@context.IsEnabled" Disabled="true" />
             </DisplayTemplate>
         </DataGridColumn>
     </ChildContent>
@@ -54,9 +56,7 @@
         </div>
     </EmptyTemplate>
     <LoadingTemplate>
-        <div class="box">
-            <progress class="progress is-small is-primary" max="100" />
-        </div>
+        <Div><SpinKit Type="SpinKitType.Fold" Color="#36403a" Centered="true" /></Div>
     </LoadingTemplate>
 </DataGrid>
 
@@ -70,38 +70,57 @@
     {
         if (!e.CancellationToken.IsCancellationRequested)
         {
-            int skip, pageSize;
-
-            if (e.ReadDataMode is DataGridReadDataMode.Virtualize)
+            tryReload:
+            try
             {
-                skip = e.VirtualizeOffset;
-                pageSize = e.VirtualizeCount;
+                await this.PageProgressService.Go(null, options => { options.Color = Color.Success; });
+
+                int skip, pageSize;
+
+                if (e.ReadDataMode is DataGridReadDataMode.Virtualize)
+                {
+                    skip = e.VirtualizeOffset;
+                    pageSize = e.VirtualizeCount;
+                }
+                else if (e.ReadDataMode is DataGridReadDataMode.Paging)
+                {
+                    skip = ((e.Page - 1) * e.PageSize);
+                    pageSize = e.PageSize;
+                }
+                else
+                {
+                    throw new NotImplementedException("ReadDataMode");
+                }
+
+                var pageOptions = new PageOptions()
+                    {
+                        Offset = skip,
+                        PageSize = pageSize
+                    };
+
+                var ret = await this.scheduledTaskService.GetPageAsync(pageOptions);
+
+                if (ret is null)
+                {
+                    throw new Exception("Result is null");
+                }
+
+                this.totalScheduledTasks = ret.TotalCount;
+                scheduledTasks = ret.Items;
             }
-            else if (e.ReadDataMode is DataGridReadDataMode.Paging)
+            catch(Exception ex)
             {
-                skip = ((e.Page - 1) * e.PageSize);
-                pageSize = e.PageSize;
+                Logger.LogError(ex, "Error loading scheduled task list");
+
+                await this.NotificationService.Error("There was an error loading the page. Please try again.", "Error Loading Task List", a => a.IntervalBeforeClose = TimeSpan.FromSeconds(10).TotalMilliseconds);
+                await Task.Delay(TimeSpan.FromSeconds(5));
+                goto tryReload;
             }
-            else
+            finally
             {
-                throw new NotImplementedException("ReadDataMode");
+                await this.PageProgressService.Go(-1);
             }
-
-            var pageOptions = new PageOptions()
-            {
-                    Offset = skip,
-                    PageSize = pageSize
-                };
-
-            var ret = await scheduledTaskService.GetPageAsync(pageOptions);
-
-            if (ret is null)
-            {
-                throw new Exception("Result is null");
-            }
-
-            this.totalScheduledTasks = ret.TotalCount;
-            scheduledTasks = ret.Items;
         }
     }
+
 }

@@ -4,8 +4,10 @@
 @inject ILogger<View> Logger
 @inject NavigationManager NavigationManager
 @inject ScheduledTaskService scheduledTaskService
+@inject IPageProgressService PageProgressService
+@inject INotificationService NotificationService
 
-<PageTitle>My Scheduled Tasks</PageTitle>
+<PageTitle>My Scheduled Tasks - Web Scheduler</PageTitle>
 
 <Bar Breakpoint="Breakpoint.Desktop">
 
@@ -20,11 +22,7 @@
 
 @if (this.model.ScheduledTaskId == Guid.Empty)
 {
-    <Paragraph>
-        <div class="box">
-            <progress class="progress is-small is-primary" max="100" />
-        </div>
-    </Paragraph>
+<Div><SpinKit Type="SpinKitType.Fold" Color="#36403a" Centered="true"/></Div>
 }
 
 @if (this.model.ScheduledTaskId != Guid.Empty)
@@ -49,6 +47,7 @@
                                 <TableHeaderCell>Last Run</TableHeaderCell>
                                 <TableHeaderCell>Next Run</TableHeaderCell>
                                 <TableHeaderCell>Schedule</TableHeaderCell>
+                                <TableHeaderCell>Enabled</TableHeaderCell>
                             </TableRow>
                         </TableHeader>
                         <TableBody>
@@ -61,6 +60,9 @@
                                 <TableRowCell>
                                     @this.CronExpressionDescription
                                     <Paragraph TextColor="TextColor.Muted">@model.CronExpression</Paragraph>
+                                </TableRowCell>
+                                <TableRowCell>
+                                    <Switch TValue="bool" @bind-Checked="@model.IsEnabled" Disabled="true" />
                                 </TableRowCell>
                             </TableRow>
 
@@ -110,7 +112,8 @@
             <CardHeader>
                 <CardTitle>Trigger Details</CardTitle>
             </CardHeader>
-            <CardBody>@switch (this.model.TriggerType)
+            <CardBody>
+                @switch (this.model.TriggerType)
                 {
                     case TaskTriggerType.HttpTrigger:
                         {
@@ -171,15 +174,25 @@
     }
     protected async override Task OnInitializedAsync()
     {
+    tryAgain:
         try
         {
+            await this.PageProgressService.Go(null, options => { options.Color = Color.Success; });
+
             model = await scheduledTaskService.GetScheduledTaskAsync(this.Id);
             this.NextRuns = this.GetNextRuns().Take(5);
             this.CronExpressionDescription = this.GetCronExpressionDescription();
         }
         catch (Exception ex)
         {
-            Logger.LogError(ex, "Error getting scheduled task: {id}", model.ScheduledTaskId);
+            Logger.LogError(ex, "Error getting scheduled task: {id}", this.Id);
+            await this.NotificationService.Error("There was an error loading your Scheduled Tasks. Please try again.", "Error Saving Task", a => a.IntervalBeforeClose = TimeSpan.FromSeconds(10).TotalMilliseconds);
+            await Task.Delay(TimeSpan.FromSeconds(5));
+            goto tryAgain;
+        }
+        finally
+        {
+            await this.PageProgressService.Go(-1);
         }
 
     }

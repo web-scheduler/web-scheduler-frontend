@@ -11,10 +11,7 @@ using WebScheduler.FrontEnd.BlazorApp.Services;
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 
 builder.Services
-  .AddBlazorise(options =>
-  {
-      options.ChangeTextOnKeyPress = true;
-  })
+  .AddBlazorise(options => options.ChangeTextOnKeyPress = true)
   .AddBootstrap5Providers()
   .AddFontAwesomeIcons();
 
