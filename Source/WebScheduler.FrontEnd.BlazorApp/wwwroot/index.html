@@ -11,14 +11,91 @@
 
   <link href="_content/Blazorise/blazorise.css" rel="stylesheet" />
   <link href="_content/Blazorise.Bootstrap5/blazorise.bootstrap5.css" rel="stylesheet" />
-
+  <link href="_content/Blazorise.SpinKit/blazorise.spinkit.css" rel="stylesheet" />
+  <link href="_content/Blazorise.Snackbar/blazorise.snackbar.css" rel="stylesheet">
   <link href="css/app.css" rel="stylesheet" />
   <link href="WebScheduler.FrontEnd.BlazorApp.styles.css" rel="stylesheet" />
 </head>
 
 <body>
-  <div id="app">Loading...</div>
-  <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+  <div id="app">
+    <div class="loader-box">
+      <svg width="51px" height="50px" viewBox="0 0 51 50">
+
+        <rect y="0" width="13" height="50" fill="#1fa2ff">
+          <animate attributeName="height" values="50;10;50" begin="0s" dur="1s" repeatCount="indefinite" />
+          <animate attributeName="y" values="0;20;0" begin="0s" dur="1s" repeatCount="indefinite" />
+        </rect>
+
+        <rect x="19" y="0" width="13" height="50" fill="#12d8fa">
+          <animate attributeName="height" values="50;10;50" begin="0.2s" dur="1s" repeatCount="indefinite" />
+          <animate attributeName="y" values="0;20;0" begin="0.2s" dur="1s" repeatCount="indefinite" />
+        </rect>
+
+        <rect x="38" y="0" width="13" height="50" fill="#06ffcb">
+          <animate attributeName="height" values="50;10;50" begin="0.4s" dur="1s" repeatCount="indefinite" />
+          <animate attributeName="y" values="0;20;0" begin="0.4s" dur="1s" repeatCount="indefinite" />
+        </rect>
+
+      </svg>      <br /><br />
+      <p id="loadingText">Loading...</p>
+      <br />
+      <progress id="pbar"></progress>
+    </div>
+    <style>
+      .loader-box {
+        width: 500px;
+        height: 120px;
+        margin: 100px auto;
+        text-align: center;
+        font-family: Consolas, Verdana;
+        font-size: 10px;
+      }
+    </style>
+  </div>
+  <script type="text/javascript">
+
+    (function () {
+      /*
+       * Loader/splash screen
+       * */
+
+      var total = 0;
+      var loaded = 0;
+      const { fetch: origFetch } = window;
+
+      window.fetch = async (...args) => {
+        total++;
+       return new Promise((resolve, reject) => {
+
+           origFetch(...args)
+           .then(response => {
+             loaded++;
+
+
+
+              var progress = Math.floor(((loaded / total) * 100));
+              document.getElementById("pbar").max = total;
+              document.getElementById("pbar").value = loaded;
+             document.getElementById("loadingText").innerHTML = "Loaded " + args[0] + ", " + progress + " %..."
+
+              if (loaded == total && total> 5) {
+                // Reset override.
+                window.fetch = origFetch;
+                document.getElementById("loadingText").innerHTML = "Loading 100%, opening application...";
+              }
+              resolve(response);
+
+           }).catch(err => {
+             console.error(err)
+             reject(response)
+           });
+
+        });
+      };
+    })();
+</script>
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
   <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/js/bootstrap.min.js" integrity="sha384-VHvPCCyXqtD5DqJeNxl2dtTyhF78xXNXdkwX1CZeRusQfRKp+tA7hAShOK/B/fQ2" crossorigin="anonymous"></script>
 
@@ -30,6 +107,7 @@
   <script src="_content/Microsoft.AspNetCore.Components.WebAssembly.Authentication/AuthenticationService.js"></script>
   <script src="_framework/blazor.webassembly.js"></script>
   <script src="_content/Blazor-Analytics/blazor-analytics.js"></script>
+
 
 </body>
 

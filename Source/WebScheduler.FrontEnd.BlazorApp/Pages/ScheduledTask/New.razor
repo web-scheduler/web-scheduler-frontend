@@ -20,101 +20,116 @@ else
     <PageTitle>Create Scheduled Tasks</PageTitle>
     <Heading Size="HeadingSize.Is1">New Scheduled Task</Heading>
 }
+@if (!this.IsReady)
+{
+            <Row><SpinKit Type="SpinKitType.Fold" Color="#36403a" Centered="true"/></Row>
+}
+@if (this.IsReady)
+{
+    <Row>
+        <Validations Mode="ValidationMode.Auto" Model="@model" StatusChanged="this.ValidationStatusChange">
 
+            <Validation>
+                <Field Horizontal="true">
+                    <FieldLabel ColumnSize="ColumnSize.Is2">Name</FieldLabel>
+                    <FieldBody ColumnSize="ColumnSize.Is10">
+                        <TextEdit Placeholder="Task Name" @bind-Text="@model.Name">
+                            <Feedback>
+                                <ValidationError />
+                            </Feedback>
+                        </TextEdit>
+                    </FieldBody>
+                </Field>
+            </Validation>
+            <Validation>
+                <Field Horizontal="true">
+                    <FieldLabel ColumnSize="ColumnSize.Is2">Description</FieldLabel>
+                    <FieldBody ColumnSize="ColumnSize.Is10">
+                        <MemoEdit Placeholder="Description" @bind-Text="@model.Description">
+                            <Feedback>
+                                <ValidationError />
+                            </Feedback>
+                        </MemoEdit>
+                    </FieldBody>
+                </Field>
+            </Validation>
+            <Validation>
+                <Field Horizontal="true">
+                    <FieldLabel ColumnSize="ColumnSize.Is2">Schedule</FieldLabel>
+                    <FieldBody ColumnSize="ColumnSize.Is10">
+                        <TextEdit Placeholder="* * * * *" @bind-Text="@model.CronExpression" @onkeypress="this.UpdateCronDescription" @onchange="this.UpdateCronDescription">
+                            <Feedback>
+                                <ValidationError />
+                            </Feedback>
+                        </TextEdit>
+                        <Paragraph>@this.CronExpressionDescription</Paragraph>
+                    </FieldBody>
+                </Field>
+            </Validation>
+            <Field Horizontal="true">
+                <FieldLabel ColumnSize="ColumnSize.Is2">Enabled</FieldLabel>
+                <FieldBody ColumnSize="ColumnSize.Is10">
+                    <Switch TValue="bool" @bind-Checked="@model.IsEnabled" />
+                </FieldBody>
+            </Field>
+            <Validation>
+                <Field Horizontal="true">
+                    <FieldLabel ColumnSize="ColumnSize.Is2">Trigger Type</FieldLabel>
+                    <FieldBody ColumnSize="ColumnSize.Is10">
+                        <Select TValue="WebScheduler.Abstractions.Grains.Scheduler.TaskTriggerType" @bind-SelectedValue="this.model.TriggerType" @onchange="OnHttpTriggerDropDownChange">
+                            <ChildContent>
+                                @foreach (var triggerType in Enum.GetValues(typeof(WebScheduler.Abstractions.Grains.Scheduler.TaskTriggerType)))
+                                {
+                                    <SelectItem @key="@triggerType" Value="@triggerType">@triggerType</SelectItem>
+                                }
+                            </ChildContent>
+                            <Feedback>
+                                <ValidationError />
+                            </Feedback>
+                        </Select>
 
-<Validations Mode="ValidationMode.Auto" Model="@model" StatusChanged="this.ValidationStatusChange">
+                    </FieldBody>
 
-    <Validation>
-        <Field Horizontal="true">
-            <FieldLabel ColumnSize="ColumnSize.Is2">Name</FieldLabel>
-            <FieldBody ColumnSize="ColumnSize.Is10">
-                <TextEdit Placeholder="Task Name" @bind-Text="@model.Name">
-                    <Feedback>
-                        <ValidationError />
-                    </Feedback>
-                </TextEdit>
-            </FieldBody>
-        </Field>
-    </Validation>
-    <Validation>
-        <Field Horizontal="true">
-            <FieldLabel ColumnSize="ColumnSize.Is2">Description</FieldLabel>
-            <FieldBody ColumnSize="ColumnSize.Is10">
-                <MemoEdit Placeholder="Description" @bind-Text="@model.Description">
-                    <Feedback>
-                        <ValidationError />
-                    </Feedback>
-                </MemoEdit>
-            </FieldBody>
-        </Field>
-    </Validation>
-    <Validation>
-        <Field Horizontal="true">
-            <FieldLabel ColumnSize="ColumnSize.Is2">Schedule</FieldLabel>
-            <FieldBody ColumnSize="ColumnSize.Is10">
-                <TextEdit Placeholder="* * * * *" @bind-Text="@model.CronExpression" @onkeypress="this.UpdateCronDescription" @onchange="this.UpdateCronDescription">
-                    <Feedback>
-                        <ValidationError />
-                    </Feedback>
-                </TextEdit>
-                <Paragraph>@this.CronExpressionDescription</Paragraph>
-            </FieldBody>
-        </Field>
-    </Validation>
-    <Field Horizontal="true">
-        <FieldLabel ColumnSize="ColumnSize.Is2">Enabled</FieldLabel>
-        <FieldBody ColumnSize="ColumnSize.Is10">
-            <Switch TValue="bool" @bind-Checked="@model.IsEnabled" />
-        </FieldBody>
-    </Field>
-    <Validation>
-        <Field Horizontal="true">
-            <FieldLabel ColumnSize="ColumnSize.Is2">Trigger Type</FieldLabel>
-            <FieldBody ColumnSize="ColumnSize.Is10">
-                <Select TValue="WebScheduler.Abstractions.Grains.Scheduler.TaskTriggerType" @bind-SelectedValue="this.model.TriggerType" @onchange="OnHttpTriggerDropDownChange">
-                    <ChildContent>
-                        @foreach (var triggerType in Enum.GetValues(typeof(WebScheduler.Abstractions.Grains.Scheduler.TaskTriggerType)))
-                        {
-                            <SelectItem @key="@triggerType" Value="@triggerType">@triggerType</SelectItem>
-                        }
-                    </ChildContent>
-                    <Feedback>
-                        <ValidationError />
-                    </Feedback>
-                </Select>
+                </Field>
+            </Validation>
+            @if (this.selectedTriggerType is not null)
+            {
+                <Card>
+                    <CardHeader>@this.model.TriggerType Configuration</CardHeader>
+                    <CardBody>
+                        <CascadingValue Value="@this.model" Name="Model">
 
-            </FieldBody>
+                            <DynamicComponent Type="@this.selectedTriggerType" />
+                        </CascadingValue>
 
-        </Field>
-    </Validation>
-    @if (this.selectedTriggerType is not null)
-    {
-        <Card>
-            <CardHeader>@this.model.TriggerType Configuration</CardHeader>
-            <CardBody>
-                <CascadingValue Value="@this.model" Name="Model">
+                    </CardBody>
+                </Card>
+            }
+        </Validations>
+    </Row>
+    <Bar Breakpoint="Breakpoint.Desktop">
+        <BarMenu>
+            <BarStart>
+                <BarItem>
+                    <Button Color="Color.Primary" Type="ButtonType.Submit" @onclick="HandleValidSubmit" Disabled="@isFormValid">Save</Button>
 
-                    <DynamicComponent Type="@this.selectedTriggerType" />
-                </CascadingValue>
-
-            </CardBody>
-        </Card>
-    }
-</Validations>
-
-<Button Color="Color.Primary" Type="ButtonType.Submit" @onclick="HandleValidSubmit" Disabled="@isFormValid">Save</Button>
-
+                </BarItem>
+            </BarStart>
+        </BarMenu>
+    </Bar>
+}
 @code {
     [Parameter]
     public Guid Id { get; set; } = Guid.Empty;
     private string CronExpressionDescription = string.Empty;
     private bool EditMode = false;
+    private bool IsReady = false;
     protected SaveScheduledTask model { get; set; } = new()
         {
             CronExpression = $"* * * * *",
 
         };
-
+    protected SaveScheduledTask originalModel = new();
     bool isFormValid;
 
     private Type? selectedTriggerType;
@@ -144,11 +159,14 @@ else
     }
     protected async override Task OnInitializedAsync()
     {
+    tryReload:
         if (this.Id != Guid.Empty)
         {
             this.EditMode = true;
             try
             {
+                await this.PageProgressService.Go(null, options => { options.Color = Color.Success; });
+
                 var fullTask = await scheduledTaskService.GetScheduledTaskAsync(this.Id);
                 this.model = new();
                 this.model.CronExpression = fullTask.CronExpression.Substring(fullTask.CronExpression.IndexOf(' ') + 1);
@@ -157,15 +175,26 @@ else
                 this.model.IsEnabled = fullTask.IsEnabled;
                 this.model.Name = fullTask.Name;
                 this.model.TriggerType = fullTask.TriggerType;
+                this.originalModel = this.model.ShallowCopy();
+                this.IsReady = true;
             }
             catch (Exception ex)
             {
+                this.IsReady = false;
                 Logger.LogError(ex, "Error getting scheduled task: {id}", this.Id);
+                await this.NotificationService.Error("There was an error getting your Scheduled Task. Trying again...", "Error Loading Task", a => a.IntervalBeforeClose = TimeSpan.FromSeconds(10).TotalMilliseconds);
+                await Task.Delay(TimeSpan.FromSeconds(5));
+                goto tryReload;
+            }
+            finally
+            {
+                await this.PageProgressService.Go(-1);
             }
         }
 
         this.CronExpressionDescription = this.GetCronExpressionDescription(this.model.CronExpression);
         this.selectedTriggerType = Type.GetType($"WebScheduler.FrontEnd.BlazorApp.Shared.TriggerTypes.{this.model.TriggerType}");
+        this.IsReady = true;
     }
     protected string GetCronExpressionDescription(string expression)
     {
@@ -180,7 +209,7 @@ else
 
         return string.Empty;
     }
-    private async Task HandleValidSubmit()
+    private async Task HandleValidSubmit(MouseEventArgs e)
     {
         await this.PageProgressService.Go(null, options => { options.Color = Color.Success; });
         Logger.LogInformation("HandleValidSubmit called");
@@ -202,7 +231,9 @@ else
             }
             else
             {
-                result = await scheduledTaskService.UpdateScheduledTaskAsync(this.Id, model);
+                await this.PageProgressService.Go(null, options => { options.Color = Color.Success; });
+
+                result = await scheduledTaskService.PatchScheduledTaskAsync(this.Id, this.originalModel, this.model);
                 if (result != null)
                 {
                     await GlobalTracking.TrackEvent("edit_task", new
@@ -215,7 +246,7 @@ else
             }
             if (result is null)
             {
-                await this.NotificationService.Error("There was an error saving your Scheduled Task. Please try again.", "Error Saving Task", a => a.IntervalBeforeClose = TimeSpan.FromSeconds(10).TotalMilliseconds);
+                await this.NotificationService.Error("There was an error getting your Scheduled Task. Please try again.", "Error Saving Task", a => a.IntervalBeforeClose = TimeSpan.FromSeconds(10).TotalMilliseconds);
                 return;
             }
 
@@ -225,7 +256,7 @@ else
         catch (Exception ex)
         {
             await this.NotificationService.Error("There was an error saving your Scheduled Task. Please try again.", "Error Saving Task", a => a.IntervalBeforeClose = TimeSpan.FromSeconds(10).TotalMilliseconds);
-            Logger.LogError(ex, "Error creating scheduled task");
+            Logger.LogError(ex, "Error saving scheduled task");
         }
         finally
         {

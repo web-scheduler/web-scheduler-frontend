@@ -15,7 +15,9 @@
                         }
                     </NotAuthorized>
                     <Authorizing>
-                        <h1>Authentication in progress</h1>
+                        <Heading Size="HeadingSize.Is1" Alignment="TextAlignment.Center">Authentication in progress</Heading>
+                        <Div><SpinKit Type="SpinKitType.Fold" Color="#36403a" Centered="true"/></Div>
+
                     </Authorizing>
                 </AuthorizeRouteView>
                 <FocusOnNavigate RouteData="@routeData" Selector="h1" />
