@@ -87,8 +87,7 @@
               resolve(response);
 
            }).catch(err => {
-             console.error(err)
-             reject(response)
+             window.fetch = origFetch;
            });
 
         });
