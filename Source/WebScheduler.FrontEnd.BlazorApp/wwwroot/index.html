@@ -79,7 +79,7 @@
               document.getElementById("pbar").value = loaded;
              document.getElementById("loadingText").innerHTML = "Loaded " + args[0] + ", " + progress + " %..."
 
-              if (loaded == total && total> 5) {
+              if (loaded == total && total> 1) {
                 // Reset override.
                 window.fetch = origFetch;
                 document.getElementById("loadingText").innerHTML = "Loading 100%, opening application...";
