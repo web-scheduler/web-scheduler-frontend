@@ -38,16 +38,16 @@
     
     <PackageReference Include="Blazor-Analytics" Version="3.10.0" />
     
-    <PackageReference Include="Blazorise.Bootstrap5" Version="0.9.5.5" />
+    <PackageReference Include="Blazorise.Bootstrap5" Version="0.9.5.6" />
     
-    <PackageReference Include="Blazorise.DataGrid" Version="0.9.5.5" />
-    <PackageReference Include="Blazorise.Components" Version="0.9.5.5" />
+    <PackageReference Include="Blazorise.DataGrid" Version="0.9.5.6" />
+    <PackageReference Include="Blazorise.Components" Version="0.9.5.6" />
     
-    <PackageReference Include="Blazorise.Icons.FontAwesome" Version="0.9.5.5" />
+    <PackageReference Include="Blazorise.Icons.FontAwesome" Version="0.9.5.6" />
     
-    <PackageReference Include="Blazorise.Snackbar" Version="0.9.5.5" />
+    <PackageReference Include="Blazorise.Snackbar" Version="0.9.5.6" />
     
-    <PackageReference Include="Blazorise.SpinKit" Version="0.9.5.5" />
+    <PackageReference Include="Blazorise.SpinKit" Version="0.9.5.6" />
     
     <PackageReference Include="CronExpressionDescriptor" Version="2.16.0" />
     
@@ -63,7 +63,7 @@
     <PackageReference Include="Microsoft.Extensions.Http" Version="6.0.0" />
     <PackageReference Include="System.ComponentModel.Annotations" Version="5.0.0" />
     <PackageReference Include="WebScheduler.Abstractions" Version="0.1.24" />
-    <PackageReference Include="WebScheduler.Api.Models" Version="0.1.31" />
+    <PackageReference Include="WebScheduler.Api.Models" Version="0.1.32" />
   </ItemGroup>
 
   <!--<ItemGroup >
