@@ -233,7 +233,7 @@ else
             {
                 await this.PageProgressService.Go(null, options => { options.Color = Color.Success; });
 
-                result = await scheduledTaskService.PatchScheduledTaskAsync(this.Id, this.originalModel, this.model);
+                result = await scheduledTaskService.UpdateScheduledTaskAsync(this.Id, this.model);
                 if (result != null)
                 {
                     await GlobalTracking.TrackEvent("edit_task", new
