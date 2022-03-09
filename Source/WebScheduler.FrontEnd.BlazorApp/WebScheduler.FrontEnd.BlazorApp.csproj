@@ -45,7 +45,7 @@
     
     <PackageReference Include="Blazorise.Icons.FontAwesome" Version="0.9.5.6" />
     
-    <PackageReference Include="Blazorise.Snackbar" Version="0.9.5.6" />
+    <PackageReference Include="Blazorise.Snackbar" Version="1.0.1" />
     
     <PackageReference Include="Blazorise.SpinKit" Version="0.9.5.6" />
     
