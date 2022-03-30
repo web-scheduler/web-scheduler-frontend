@@ -41,7 +41,7 @@
     <PackageReference Include="Blazorise.Bootstrap5" Version="0.9.5.6" />
     
     <PackageReference Include="Blazorise.DataGrid" Version="0.9.5.6" />
-    <PackageReference Include="Blazorise.Components" Version="0.9.5.6" />
+    <PackageReference Include="Blazorise.Components" Version="1.0.2" />
     
     <PackageReference Include="Blazorise.Icons.FontAwesome" Version="0.9.5.6" />
     
