@@ -22,7 +22,7 @@
 
 @if (this.model.ScheduledTaskId == Guid.Empty)
 {
-<Div><SpinKit Type="SpinKitType.Fold" Color="#36403a" Centered="true"/></Div>
+    <Div><SpinKit Type="SpinKitType.Fold" Color="#36403a" Centered="true" /></Div>
 }
 
 @if (this.model.ScheduledTaskId != Guid.Empty)
@@ -131,6 +131,20 @@
                                     </TableRow>
                                 </TableBody>
                             </Table>
+                            <Card>
+                                <CardHeader>
+                                    <CardTitle>HTTP Headers</CardTitle>
+                                </CardHeader>
+                                <CardBody>
+                                    <ListGroup>
+                                        @foreach (var header in this.model.HttpTriggerProperties.Headers)
+                                        {
+                                            <ListGroupItem>@header.Key: @header.Value</ListGroupItem>
+                                        }
+                                    </ListGroup>
+
+                                </CardBody>
+                            </Card>
                             break;
                         }
                 }

@@ -29,8 +29,26 @@
         </Select>
     </FieldBody>
 </Field>
+<Field Horizontal="true">
+    <FieldLabel ColumnSize="ColumnSize.Is2">HTTP Headers</FieldLabel>
+    <FieldBody ColumnSize="ColumnSize.Is10">
 
+        Key: <TextEdit @bind-Text="headerKey" /> Value: <TextEdit @bind-Text="headerValue" /> <Button Color="Color.Primary" Type="ButtonType.Button" Size="Size.Small"
+                    @onclick="e => this.model.HttpTriggerProperties.Headers.Add(new Header(){Key = headerKey, Value=headerValue})">Add Header</Button>
+        <ListGroup id="httpHeadersList">
+            @foreach (var header in this.model.HttpTriggerProperties.Headers)
+            {
+                <ListGroupItem>@header.Key: @header.Value <Button Color="Color.Danger" Type="ButtonType.Button" Size="Size.Small"
+                    @onclick="e => this.model.HttpTriggerProperties.Headers.Remove(header)">Delete</Button></ListGroupItem>
+            }
+        </ListGroup>
+        
+    </FieldBody>
+</Field>
 @code {
     [CascadingParameter(Name = "Model")]
     public SaveScheduledTask model { get; set; } = default!;
+
+    private string headerKey = string.Empty;
+    private string headerValue = string.Empty;
 }
