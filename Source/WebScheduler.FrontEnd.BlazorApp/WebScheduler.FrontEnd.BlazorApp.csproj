@@ -63,7 +63,7 @@
     <PackageReference Include="Microsoft.Extensions.Http" Version="6.0.0" />
     <PackageReference Include="System.ComponentModel.Annotations" Version="5.0.0" />
     <PackageReference Include="WebScheduler.Abstractions" Version="0.1.26" />
-    <PackageReference Include="WebScheduler.Api.Models" Version="0.1.37" />
+    <PackageReference Include="WebScheduler.Api.Models" Version="0.1.38" />
   </ItemGroup>
 
   <!--<ItemGroup >
