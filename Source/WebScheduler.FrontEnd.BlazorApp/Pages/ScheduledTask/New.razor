@@ -127,7 +127,7 @@ else
     protected SaveScheduledTask model { get; set; } = new()
         {
             CronExpression = $"* * * * *",
-
+            HttpTriggerProperties.RequestBody = "",
         };
     protected SaveScheduledTask originalModel = new();
     bool isFormValid;
