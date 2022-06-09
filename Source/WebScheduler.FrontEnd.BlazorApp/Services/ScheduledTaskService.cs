@@ -30,7 +30,7 @@ internal class ScheduledTaskService
             var result = await this.client.GetFromJsonAsync<ScheduledTask>($"ScheduledTasks/{id}?api-version=1.0", jso);
             return result switch
             {
-                null => throw new ScheduledTaskNotFoundException(id),
+                null => throw new ScheduledTaskNotFoundException(id.ToString()),
                 _ => result
             };
         }
@@ -66,7 +66,7 @@ internal class ScheduledTaskService
             {
                 return scheduledTask;
             }
-            throw new Exception("Unable to create scheduled task.");
+            throw new InvalidOperationException("Unable to create scheduled task.");
         }
         catch (ScheduledTaskNotFoundException scheduledTaskNotFoundException)
         {
@@ -92,7 +92,7 @@ internal class ScheduledTaskService
             {
                 return scheduledTask;
             }
-            throw new Exception("Unable to update scheduled task.");
+            throw new InvalidOperationException("Unable to update scheduled task.");
         }
         catch (ScheduledTaskNotFoundException scheduledTaskNotFoundException)
         {
@@ -120,7 +120,7 @@ internal class ScheduledTaskService
             {
                 return scheduledTask;
             }
-            throw new Exception("Unable to update scheduled task.");
+            throw new InvalidOperationException("Unable to update scheduled task.");
         }
         catch (ScheduledTaskNotFoundException scheduledTaskNotFoundException)
         {
