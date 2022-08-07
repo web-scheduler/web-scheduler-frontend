@@ -5,9 +5,9 @@ using WebScheduler.Abstractions.Grains.Scheduler;
 using Microsoft.AspNetCore.WebUtilities;
 using System.Text.Json;
 using System.Globalization;
-using WebScheduler.Api.Models.ViewModels;
 using System.Text.Json.Serialization;
 using WebScheduler.FrontEnd.BlazorApp.Helpers;
+using WebScheduler.Client.Http.Models.ViewModels;
 
 internal class ScheduledTaskService
 {
