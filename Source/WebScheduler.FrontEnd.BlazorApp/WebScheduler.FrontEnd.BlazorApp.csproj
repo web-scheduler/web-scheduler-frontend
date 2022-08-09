@@ -58,7 +58,7 @@
     <PackageReference Include="WebScheduler.Client.Http.Models" Version="0.1.45" />
     <PackageReference Update="Microsoft.VisualStudio.Threading.Analyzers" Version="17.3.44" />
     <PackageReference Update="MinVer" Version="4.1.0" />    
-    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="6.0.7" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="6.0.8" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Authentication" Version="6.0.7" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="6.0.7" PrivateAssets="all" />
     <PackageReference Include="Microsoft.AspNetCore.Razor" Version="2.2.0" />
