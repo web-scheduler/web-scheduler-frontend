@@ -38,7 +38,7 @@
     
     <PackageReference Include="Blazor-Analytics" Version="3.11.0" />
     
-    <PackageReference Include="Blazorise.Bootstrap5" Version="0.9.5.6" />
+    <PackageReference Include="Blazorise.Bootstrap5" Version="1.1.0" />
     
     <PackageReference Include="Blazorise.DataGrid" Version="0.9.5.6" />
     <PackageReference Include="Blazorise.Components" Version="0.9.5.6" />
