@@ -49,7 +49,7 @@
     
     <PackageReference Include="Blazorise.SpinKit" Version="0.9.5.6" />
     
-    <PackageReference Include="CronExpressionDescriptor" Version="2.16.0" />
+    <PackageReference Include="CronExpressionDescriptor" Version="2.17.2" />
     
     <PackageReference Include="Cronos" Version="0.7.1" />
     
