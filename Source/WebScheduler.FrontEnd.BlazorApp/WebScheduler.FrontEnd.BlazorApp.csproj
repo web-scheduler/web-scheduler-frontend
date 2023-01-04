@@ -55,7 +55,7 @@
     
     <PackageReference Include="Microsoft.AspNetCore.JsonPatch" Version="6.0.10" />
     
-    <PackageReference Update="Microsoft.VisualStudio.Threading.Analyzers" Version="17.3.48" />
+    <PackageReference Update="Microsoft.VisualStudio.Threading.Analyzers" Version="17.4.33" />
     <PackageReference Update="MinVer" Version="4.2.0" />    
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="6.0.10" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Authentication" Version="6.0.10" />
