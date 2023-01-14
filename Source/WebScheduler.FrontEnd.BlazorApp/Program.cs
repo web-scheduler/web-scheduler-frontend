@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using Blazor.Analytics;
 using Blazorise;
 using Blazorise.Bootstrap5;
@@ -8,26 +9,33 @@ using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using WebScheduler.FrontEnd.BlazorApp;
 using WebScheduler.FrontEnd.BlazorApp.Services;
 
-var builder = WebAssemblyHostBuilder.CreateDefault(args);
+internal sealed class Program
+{
+    [RequiresUnreferencedCode("Calls Microsoft.AspNetCore.Components.WebAssembly.Hosting.WebAssemblyHostConfiguration.GetValue<string>(String)")]
+    private static async Task Main(string[] args)
+    {
+        var builder = WebAssemblyHostBuilder.CreateDefault(args);
 
-builder.Services
-  .AddBlazorise(options => options.ChangeTextOnKeyPress = true)
-  .AddBootstrap5Providers()
-  .AddFontAwesomeIcons();
+        builder.Services
+          .AddBlazorise(options => options.ChangeTextOnKeyPress = true)
+          .AddBootstrap5Providers()
+          .AddFontAwesomeIcons();
 
-builder.RootComponents.Add<App>("#app");
-builder.RootComponents.Add<HeadOutlet>("head::after");
+        builder.RootComponents.Add<App>("#app");
+        builder.RootComponents.Add<HeadOutlet>("head::after");
 
-builder.Services.AddHttpClient<ScheduledTaskService>(client => client.BaseAddress = new Uri(builder.Configuration.GetValue<string>("WebScheduler:BaseUri")))
-.AddHttpMessageHandler(sp => sp.GetRequiredService<AuthorizationMessageHandler>()
-    .ConfigureHandler(
-        authorizedUrls: builder.Configuration.GetSection("IdentitySettings:AuthorizedUris").AsEnumerable().Select(x => x.Value).Where(j => !string.IsNullOrWhiteSpace(j)).ToArray(),
-        scopes: builder.Configuration.GetSection("IdentitySettings:DefaultScopes").AsEnumerable().Select(x => x.Value).Where(j => !string.IsNullOrWhiteSpace(j)).ToArray()));
+        builder.Services.AddHttpClient<ScheduledTaskService>(client => client.BaseAddress = new Uri(builder.Configuration.GetValue<string>("WebScheduler:BaseUri")!))
+        .AddHttpMessageHandler(sp => sp.GetRequiredService<AuthorizationMessageHandler>()
+            .ConfigureHandler(
+                authorizedUrls: builder.Configuration.GetSection("IdentitySettings:AuthorizedUris").AsEnumerable().Select(x => x.Value).Where(j => !string.IsNullOrWhiteSpace(j)).ToArray(),
+                scopes: builder.Configuration.GetSection("IdentitySettings:DefaultScopes").AsEnumerable().Select(x => x.Value).Where(j => !string.IsNullOrWhiteSpace(j)).ToArray()));
 
-builder.Services.AddOidcAuthentication(options => builder.Configuration.Bind("IdentitySettings", options.ProviderOptions));
+        builder.Services.AddOidcAuthentication(options => builder.Configuration.Bind("IdentitySettings", options.ProviderOptions));
 
-builder.Services.AddAuthorizationCore(_ => { });
+        builder.Services.AddAuthorizationCore(_ => { });
 
-builder.Services.AddGoogleAnalytics(builder.Configuration["GoogleAnalytics:UA"], builder.HostEnvironment.IsDevelopment());
+        builder.Services.AddGoogleAnalytics(builder.Configuration["GoogleAnalytics:UA"], builder.HostEnvironment.IsDevelopment());
 
-await builder.Build().RunAsync();
+        await builder.Build().RunAsync();
+    }
+}

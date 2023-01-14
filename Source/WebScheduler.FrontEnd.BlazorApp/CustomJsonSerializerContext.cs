@@ -8,6 +8,6 @@ using WebScheduler.Client.Http.Models.ViewModels;
 [JsonSerializable(typeof(ScheduledTask[]))]
 [JsonSerializable(typeof(PageResults<ScheduledTask>))]
 [JsonSerializable(typeof(PageOptions))]
-internal partial class CustomJsonSerializerContext : JsonSerializerContext
+internal sealed partial class CustomJsonSerializerContext : JsonSerializerContext
 {
 }
