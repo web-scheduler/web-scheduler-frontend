@@ -8,8 +8,9 @@ using System.Globalization;
 using System.Text.Json.Serialization;
 using WebScheduler.FrontEnd.BlazorApp.Helpers;
 using WebScheduler.Client.Http.Models.ViewModels;
+using System.Diagnostics.CodeAnalysis;
 
-internal class ScheduledTaskService
+internal sealed class ScheduledTaskService
 {
     private readonly ILogger<ScheduledTaskService> logger;
     private readonly HttpClient client;
@@ -23,6 +24,7 @@ internal class ScheduledTaskService
         jso.Converters.Add(new JsonStringEnumConverter());
     }
 
+    [RequiresUnreferencedCode("Calls System.Net.Http.Json.HttpClientJsonExtensions.GetFromJsonAsync<TValue>(String, JsonSerializerOptions, CancellationToken)")]
     public async Task<ScheduledTask> GetScheduledTaskAsync(Guid id)
     {
         try
@@ -42,6 +44,7 @@ internal class ScheduledTaskService
         }
     }
 
+    [RequiresUnreferencedCode("Calls System.Net.Http.Json.HttpClientJsonExtensions.GetFromJsonAsync<TValue>(String, JsonSerializerOptions, CancellationToken)")]
     public async Task<PageResults<ScheduledTask>?> GetPageAsync(PageOptions pageOptions)
     {
         pageOptions.PageSize ??= 10;
@@ -55,6 +58,7 @@ internal class ScheduledTaskService
         return await this.client.GetFromJsonAsync<PageResults<ScheduledTask>>(url, jso);
     }
 
+    [RequiresUnreferencedCode("Calls System.Net.Http.Json.HttpClientJsonExtensions.PostAsJsonAsync<TValue>(String, TValue, JsonSerializerOptions, CancellationToken)")]
     public async Task<ScheduledTask> CreateScheduledTaskAsync(SaveScheduledTask saveScheduledTask)
     {
         try
@@ -81,6 +85,7 @@ internal class ScheduledTaskService
         }
     }
 
+    [RequiresUnreferencedCode("Calls System.Net.Http.Json.HttpContentJsonExtensions.ReadFromJsonAsync<T>(JsonSerializerOptions, CancellationToken)")]
     public async Task<ScheduledTask> UpdateScheduledTaskAsync(Guid id, SaveScheduledTask saveScheduledTask)
     {
         try
@@ -107,6 +112,7 @@ internal class ScheduledTaskService
         }
     }
 
+    [RequiresUnreferencedCode("Calls System.Net.Http.Json.HttpContentJsonExtensions.ReadFromJsonAsync<T>(JsonSerializerOptions, CancellationToken)")]
     public async Task<ScheduledTask> PatchScheduledTaskAsync(Guid id, SaveScheduledTask original, SaveScheduledTask updated)
     {
         try

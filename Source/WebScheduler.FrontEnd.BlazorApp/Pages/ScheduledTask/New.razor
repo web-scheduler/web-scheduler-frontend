@@ -1,5 +1,6 @@
 @page "/scheduledtasks/new"
 @page "/scheduledtasks/{Id:guid}/edit"
+@using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
 @attribute [Authorize]
 
 @inject ScheduledTaskService scheduledTaskService
@@ -22,7 +23,7 @@ else
 }
 @if (!this.IsReady)
 {
-            <Row><SpinKit Type="SpinKitType.Fold" Color="#36403a" Centered="true"/></Row>
+    <Row><SpinKit Type="SpinKitType.Fold" Color="#36403a" Centered="true" /></Row>
 }
 @if (this.IsReady)
 {
@@ -178,6 +179,10 @@ else
                 this.originalModel = this.model.ShallowCopy();
                 this.IsReady = true;
             }
+            catch (AccessTokenNotAvailableException exception)
+            {
+                exception.Redirect();
+            }
             catch (Exception ex)
             {
                 this.IsReady = false;
@@ -252,7 +257,10 @@ else
 
             NavigationManager.NavigateTo($"scheduledtasks/{result.ScheduledTaskId}");
         }
-
+        catch (AccessTokenNotAvailableException exception)
+        {
+            exception.Redirect();
+        }
         catch (Exception ex)
         {
             await this.NotificationService.Error("There was an error saving your Scheduled Task. Please try again.", "Error Saving Task", a => a.IntervalBeforeClose = TimeSpan.FromSeconds(10).TotalMilliseconds);
@@ -263,4 +271,4 @@ else
             await this.PageProgressService.Go(-1);
         }
     }
-    }
+}
