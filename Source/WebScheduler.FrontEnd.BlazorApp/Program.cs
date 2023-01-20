@@ -32,7 +32,7 @@ internal sealed class Program
 
         builder.Services.AddOidcAuthentication(options => builder.Configuration.Bind("IdentitySettings", options.ProviderOptions));
 
-        builder.Services.AddAuthorizationCore(_ => { });
+        builder.Services.AddAuthorizationCore();
 
         builder.Services.AddGoogleAnalytics(builder.Configuration["GoogleAnalytics:UA"], builder.HostEnvironment.IsDevelopment());
 

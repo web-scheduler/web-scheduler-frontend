@@ -1,6 +1,7 @@
 @page "/scheduledtasks/{Id:guid}"
 @attribute [Authorize]
 @using Cronos
+@using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
 @inject ILogger<View> Logger
 @inject NavigationManager NavigationManager
 @inject ScheduledTaskService scheduledTaskService
@@ -196,6 +197,10 @@
             model = await scheduledTaskService.GetScheduledTaskAsync(this.Id);
             this.NextRuns = this.GetNextRuns().Take(5);
             this.CronExpressionDescription = this.GetCronExpressionDescription();
+        }
+        catch (AccessTokenNotAvailableException exception)
+        {
+            exception.Redirect();
         }
         catch (Exception ex)
         {
