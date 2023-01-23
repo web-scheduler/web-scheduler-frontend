@@ -64,7 +64,7 @@
     <PackageReference Include="Microsoft.AspNetCore.WebUtilities" Version="2.2.0" />
     <PackageReference Include="Microsoft.Extensions.Http" Version="7.0.0" />
     <PackageReference Include="System.ComponentModel.Annotations" Version="5.0.0" />
-    <PackageReference Include="WebScheduler.Client.Http.Models" Version="0.1.53" />
+    <PackageReference Include="WebScheduler.Client.Http.Models" Version="0.1.56" />
 
   </ItemGroup>
 
