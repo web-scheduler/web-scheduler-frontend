@@ -57,7 +57,7 @@
     
     <PackageReference Update="Microsoft.VisualStudio.Threading.Analyzers" Version="17.5.22" />
     <PackageReference Update="MinVer" Version="4.3.0" />    
-    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="7.0.4" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="7.0.5" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Authentication" Version="7.0.5" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="7.0.4" PrivateAssets="all" />
     <PackageReference Include="Microsoft.AspNetCore.Razor" Version="2.2.0" />
