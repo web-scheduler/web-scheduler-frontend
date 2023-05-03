@@ -47,7 +47,7 @@
     
     <PackageReference Include="Blazorise.Snackbar" Version="1.2.2" />
     
-    <PackageReference Include="Blazorise.SpinKit" Version="1.2.2" />
+    <PackageReference Include="Blazorise.SpinKit" Version="1.2.3" />
     
     <PackageReference Include="CronExpressionDescriptor" Version="2.19.0" />
     
